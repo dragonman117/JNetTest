@@ -1,0 +1,7 @@
+Currently to get up and running your dev system do the following:
+
+1. Checkout the Repository
+2. Branch to individual branch
+3. Run npm install
+4. Optional: sudo npm install --g nodemon
+5. npm start (or if nodemon: nodemon start)
