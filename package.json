@@ -5,7 +5,7 @@
   "main": "app.js",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ava",
     "start": "node ./bin/www"
   },
   "author": "TJ Ferrell <tj.ferrell@gmail.com>",
@@ -26,5 +26,13 @@
     "serve-favicon": "~2.3.0",
     "sqlite3": "^3.1.8",
     "underscore": "1.8.3"
+  },
+  "devDependencies": {
+    "ava": "^0.18.2"
+  },
+  "ava": {
+    "files":["tests/*.js"],
+    "verbose":true,
+    "failFast":true
   }
 }
