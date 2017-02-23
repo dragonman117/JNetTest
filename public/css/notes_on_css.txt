@@ -1,0 +1,12 @@
+btn btn-primary:   old color:#2e6da4    new: #62bdcc        #note: Too bright of a blue, needs to be darker so it can be read
+btn btn-success:   old color:#5cb85c    new: #68cc60        #note: Looks pretty good.
+btn-outline-*: needs to update with changes to btn-*
+
+form-control:   NO RECOMMENDED CHANGE
+bg-inverse:     old color: #292b2c      new: #474747        #note: slightly lighter grey than Bootstrap styling
+list-group-item active old:#2075d8      new:                #note: Used to be deep blue, recommended change to match light grey
+dropdown-menu   old bg-color: white     new: #d8d8d8
+dropdown-item   old bg-color: eggwhite  new: lighter white or darker grey?
+
+
+
