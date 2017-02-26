@@ -3,7 +3,8 @@ lang = require("../lang/lang.eng.js");
 
 module.exports = function(app, passport) {
     app.get('/', function(req,res){
-        res.json({status:"found home"});
+        //res.json({status:"found home"});
+        res.render("error", dataObj)
     });
 
     app.post('/signup', function(req, res, next){
