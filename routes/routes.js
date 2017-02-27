@@ -2,12 +2,11 @@
 lang = require("../lang/lang.eng.js");
 
 hbs = require('hbs');
-
+hbs.registerPartials(__dirname + '/../views/partials');
 
 
 module.exports = function(app, passport) {
     app.get('/', function(req,res){
-        hbs.registerPartials(__dirname + '/../views/partials');
         res.render('test', {classSections:['CS1400', 'MATH2200','DEATH2250']});
         //res.json({status:"found home"});
     });

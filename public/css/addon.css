@@ -3,9 +3,9 @@
     padding-left: 0;
     margin-right: 0;
     margin-left: 0;
-    height: 100vh;
+    height: 89vh;
     position: relative;
-    max-height: 100vh;
+    max-height: 89vh;
     display: flex;
     overflow: hidden;
     width: 100%
@@ -22,26 +22,26 @@
     flex: 1;
     -webkit-overflw-scrolling: touch
 }
-.navbar.navbar-default.side{
-    height: 90%;
-    max-height: 90%;
+.side.navbar.navbar-default{
+    height: 80%;
+    max-height: 80%;
 }
 .navbar{
     margin-bottom: 0px;
 }
 .col-sm-9 {
-    height: 90%;
-    max-height: 90%;
+    height: 80%;
+    max-height: 80%;
 
 }
 .col-lg-10{
-    height: 90%;
-    max-height: 90%
+    height: 80%;
+    max-height: 80%
 }
 .col-sm-3,
 .col-lg-2{
     margin-left: -15px;
-    height: 90%;
+    height: 80%;
     min-width: 17rem
 }
 
