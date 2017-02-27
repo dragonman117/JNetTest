@@ -3,7 +3,8 @@ lang = require("../lang/lang.eng.js");
 
 module.exports = function(app, passport) {
     app.get('/', function(req,res){
-        res.render('test.hbs')
+
+        res.render('test', {classSections:['CS1400', 'MATH2200','DEATH2250']});
         //res.json({status:"found home"});
     });
 

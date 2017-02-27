@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "test": "ava",
-    "start": "node ./bin/www"
+    "start": "nodemon ./bin/www"
   },
   "author": "TJ Ferrell <tj.ferrell@gmail.com>",
   "license": "MIT",
