@@ -7,7 +7,7 @@ hbs.registerPartials(__dirname + '/../views/partials');
 
 module.exports = function(app, passport) {
     app.get('/', function(req,res){
-        res.render('test', {classSections:['CS1400', 'MATH2200','DEATH2250']});
+        res.render('main_with_sidebar', {classSections:['CS1400', 'MATH2200','DEATH2250']});
         //res.json({status:"found home"});
     });
 

@@ -23,25 +23,26 @@
     -webkit-overflw-scrolling: touch
 }
 .side.navbar.navbar-default{
-    height: 80%;
-    max-height: 80%;
+    height: 100%;
+    max-height: 100%;
 }
 .navbar{
     margin-bottom: 0px;
+    background: #d8d8d8;
 }
 .col-sm-9 {
-    height: 80%;
-    max-height: 80%;
+    height: 100%;
+    max-height: 100%;
 
 }
 .col-lg-10{
-    height: 80%;
-    max-height: 80%
+    height: 100%;
+    max-height: 100%
 }
 .col-sm-3,
 .col-lg-2{
     margin-left: -15px;
-    height: 80%;
+    height: 100%;
     min-width: 17rem
 }
 
