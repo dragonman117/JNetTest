@@ -1,34 +1,50 @@
 .container {
-    padding-right: 15px;
-    padding-left: 0px;
-    margin-right: auto;
-    margin-left: 0px;
-    height: 100%;
-    max-height: 100%;
+    padding-right: 0;
+    padding-left: 0;
+    margin-right: 0;
+    margin-left: 0;
+    height: 100vh;
+    position: relative;
+    max-height: 100vh;
+    display: flex;
+    overflow: hidden;
+    width: 100%
 }
+.body{
+    width: 100%;
+}
+
 .inner-box {
     height: auto;
     overflow-y: auto;
     overflow-x: hidden;
+    width: 100%;
+    flex: 1;
+    -webkit-overflw-scrolling: touch
 }
-.col-sm-9 {
-    height: 100%;
-    max-height: 100%
-}
-.col-lg-10{
-    height: 100%;
-    max-height: 100%
-}
-.col-sm-3{
-    height: 100%
-}
-.col-lg-2{
-    height: 100%
+.navbar.navbar-default.side{
+    height: 90%;
+    max-height: 90%;
 }
 .navbar{
-    height: 100%;
-    max-height: 100%
+    margin-bottom: 0px;
 }
+.col-sm-9 {
+    height: 90%;
+    max-height: 90%;
+
+}
+.col-lg-10{
+    height: 90%;
+    max-height: 90%
+}
+.col-sm-3,
+.col-lg-2{
+    margin-left: -15px;
+    height: 90%;
+    min-width: 17rem
+}
+
 .row{
     height: 100%;
     max-height: 100%;
