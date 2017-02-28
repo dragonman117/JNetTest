@@ -28,6 +28,10 @@ module.exports = function(app, passport) {
         });
     });
 
+    app.get('/login', function(req, res, next){
+        res.render('login');
+    });
+
     app.post('/login', passport.authenticate('local',{
         successRedirect : '/userInfo', // redirect to the secure profile section
         failureRedirect : '/error' // redirect back to the signup page if there is an error

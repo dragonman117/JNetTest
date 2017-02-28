@@ -20,7 +20,8 @@
     overflow-x: hidden;
     width: 100%;
     flex: 1;
-    -webkit-overflw-scrolling: touch
+    -webkit-overflw-scrolling: touch;
+    margin-bottom: 50px;
 }
 .side.navbar.navbar-default{
     height: 100%;
