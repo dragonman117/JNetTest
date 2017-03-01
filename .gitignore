@@ -148,3 +148,6 @@ typings/
 
 # dotenv environment variables file
 .env
+
+.idea/JNetTest.iml
+*.xml
