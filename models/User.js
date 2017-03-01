@@ -1,18 +1,36 @@
-var bcrypt = require('bcrypt-nodejs');
-
+var bcrypt = require('bcrypt-nodejs')
 module.exports = function(sequelize, DataTypes) {
     var User = sequelize.define('User', {
-            username: {
+            id: {
+                type: DataTypes.INTEGER,
+                unique: true,
+                allowNull: false,
+                primaryKey: true
+            },
+            a_num: {
                 type: DataTypes.STRING,
                 unique: true,
                 allowNull: false
             },
-            password: {type: DataTypes.STRING }
+            first_name: {
+                type: DataTypes.STRING,
+                unique: false,
+                allowNull: false
+            },
+            last_name:{
+                type: DataTypes.STRING,
+                unique: false,
+                allowNull: false
+            },
+            password: {
+                type: DataTypes.STRING,
+                allowNull: false
+            }
         },
         {
             hooks: {
                 beforeValidate: function(user, opt){
-                    //username normalization
+                    //a_num normalization
                     if(typeof user.email == "string"){
                         user.email = user.email.toLowerCase();
                     }
