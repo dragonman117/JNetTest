@@ -4,11 +4,30 @@ lang = require("../lang/lang.eng.js");
 hbs = require('hbs');
 hbs.registerPartials(__dirname + '/../views/partials');
 
+var fakedb = [
+    {
+        name:"CS1400",
+        sections:['Moderate', 'CrazyHard','SurprisinglyEasyFinal']
+    },
+
+    {
+        name:"MATH2200",
+        sections:['ex0', 'ex1']
+    },
+
+    {
+        name: "DEATH2250",
+        sections: []
+    }
+];
+
 
 module.exports = function(app, passport) {
     app.get('/', function(req,res){
-        res.render('main_with_sidebar', {classSections:['CS1400', 'MATH2200','DEATH2250']});
-        //res.json({status:"found home"});
+        let results = {};
+        results["classSections"] = ['CS1400', 'MATH2200','DEATH2250'];
+        results["db"] = fakedb;
+        res.render('exam_list_instructor', results);
     });
 
     app.post('/signup', function(req, res, next){
