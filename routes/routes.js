@@ -4,23 +4,6 @@ lang = require("../lang/lang.eng.js");
 hbs = require('hbs');
 hbs.registerPartials(__dirname + '/../views/partials');
 
-var fakedb = [
-    {
-        name:"CS1400",
-        sections:['Moderate', 'CrazyHard','SurprisinglyEasyFinal']
-    },
-
-    {
-        name:"MATH2200",
-        sections:['ex0', 'ex1']
-    },
-
-    {
-        name: "DEATH2250",
-        sections: []
-    }
-];
-
 
 module.exports = function(app, passport) {
     app.get('/', function(req,res){
@@ -32,9 +15,9 @@ module.exports = function(app, passport) {
 
     app.post('/signup', function(req, res, next){
         console.log(req.body);
-        app.db.User.find({where:{username: req.body.username}}).then(function(user){
+        app.db.User.find({where:{a_num: req.body.a_num}}).then(function(user){
             if(!user){
-                app.db.User.create({username: req.body.username, password: req.body.password}).error(function(err){
+                app.db.User.create({a_num: req.body.a_num, password: req.body.password}).error(function(err){
                     console.log(err);
                 });
                 res.json({status:"user created"})
