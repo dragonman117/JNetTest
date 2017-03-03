@@ -7,12 +7,12 @@ hbs.registerPartials(__dirname + '/../views/partials');
 var fakedb = [
     {
         name:"CS1400",
-        sections:['Moderate', 'CrazyHard','SurprisinglyEasyFinal']
+        sections:['Exam 0', 'Exam 1','Exam 2']
     },
 
     {
         name:"MATH2200",
-        sections:['ex0', 'ex1']
+        sections:['Pretest', 'Midterm 1', 'Midterm 2', 'Final']
     },
 
     {
@@ -23,9 +23,28 @@ var fakedb = [
 
 module.exports = function(app, passport) {
     app.get('/', function(req,res){
+        res.redirect(303, '/section/all');
+    });
+    app.get('/section', function(req,res){
+        res.redirect(303, '/section/all');
+    });
+
+    app.get('/section/:id', function(req,res){
         let results = {};
+        //replace this with 2 cases (section in database, or not) and database calls to get data
         results["classSections"] = ['CS1400', 'MATH2200','DEATH2250'];
-        results["db"] = fakedb;
+        if (req.params.id == 'CS1400'){
+            results["db"] =  [{name: "CS1400", sections: ['Exam 0', 'Exam 1', 'Exam 2']}];
+        }
+        else if (req.params.id == 'MATH2200') {
+            results["db"] = [{name: "MATH2200", sections: ['Pretest', 'Midterm 1', 'Midterm 2', 'Final']}];
+        }
+        else if (req.params.id == 'DEATH2250') {
+            results["db"] = [{name: "DEATH2250", sections: []}];
+        }
+        else {
+            results["db"] = fakedb;
+        }
         res.render('exam_list_instructor', results);
     });
 
@@ -54,17 +73,18 @@ module.exports = function(app, passport) {
     app.get('/logout', function(req, res, next){
         req.logout();
         console.log(req.session);
-        res.json({status:'logout', sucess:true});
+        res.redirect(303, '/');
     });
 
     app.get('/userInfo', isLoggedIn, function(req, res, next){
-        var user = req.session.passport.user;
+        let user = req.session.passport.user;
         delete user.password;
         res.json(user);
     });
 
     app.get('/error', function(req, res, next){
-        var response = {
+        //hide this for production
+        let response = {
             hasError: true,
             errMessage: lang.loginErr
         };
@@ -73,6 +93,10 @@ module.exports = function(app, passport) {
 
     app.get('/notAuthorised',function(req, res, next){
         res.json({hasError: true, message:lang.notAuth});
+    });
+
+    app.get('/*',function(req,res){
+        res.redirect(303, "/")
     });
 };
 
