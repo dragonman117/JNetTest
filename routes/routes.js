@@ -44,13 +44,47 @@ module.exports = function(app, passport) {
     });
 
     app.get('/userInfo', isLoggedIn, function(req, res, next){
-        var user = req.session.passport.user;
+        let user = req.session.passport.user;
         delete user.password;
         res.json(user);
     });
 
+
+    app.post('/exam/:id/new', function(req, res, next){
+        req.params['id'];
+    });
+    app.post('/exam/:id/edit', function(req, res, next){
+       req.params['id'];
+    });
+    app.post('/exam/:id/delete', function(req, res, next){
+        req.params['id'];
+    });
+
+    app.post('/question/:id/new', function(req, res, next){
+        req.params['id'];
+    });
+    app.post('/question/:id/edit', function(req, res, next){
+        req.params['id'];
+    });
+    app.post('/question/:id/delete', function(req, res, next){
+        req.params['id'];
+    });
+
+    app.post('/t_c/:id/new', function(req, res, next){
+        req.params['id'];
+    });
+    app.post('/t_c/:id/edit', function(req, res, next){
+        req.params['id'];
+    });
+    app.post('/t_c/:id/delete', function(req, res, next){
+        req.params['id'];
+    });
+
+
+
+
     app.get('/error', function(req, res, next){
-        var response = {
+        let response = {
             hasError: true,
             errMessage: lang.loginErr
         };
