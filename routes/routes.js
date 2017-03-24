@@ -23,6 +23,7 @@
 
 //Get Lang
 lang = require("../lang/lang.eng.js");
+db = require("../config/db.js");
 
 hbs = require('hbs');
 hbs.registerPartials(__dirname + '/../views/partials');
@@ -80,45 +81,65 @@ module.exports = function(app, passport) {
      * Get all the test cases from the questions
      */
     app.get('/data/exam/:id/edit', function(req, res, next){
-        /**
-         * var exam_data = {
-         *      "exam_id": exam_id,
-         *      "exam_title": exam_title,
-         *      "open_date": open_date,
-         *      "close_date": close_date,
-         *      "rules_stmt": rules_stmt,
-         *      "time_limit": time_limit,
-         *      "section_id": section_id,
-         *
-         *      "questions":[
-         *          Should contain all question objects in here, example question info:
-         *          {
-         *              "id" : id,
-         *              "prompt" : prompt,
-         *              "graphic" : graphic,
-         *              "starter_code" : starter_code,
-         *              "average_score" : average_score,
-         *              "rubric" : rubric
-         *              "pts_test_case" : pts_test_case,
-         *              "pts_graded" : pts_graded
-         *
-         *              "test_cases":[
-         *              contains all test cases, example:
-         *                  {
-         *                      "input" : input,
-         *                      "expected_output" : expected_output
-         *                  },
-         *              ]
-         *          },
-         *
-         *      ]
-         *
-         *
-         * }
-         *
-         */
+        console.log('Received request for exam edit.')
+        var exam_data;
+        let examPromise = db.Exam.findById(req.params['id']);
+        var questionsPromise = db.Question.findAll({where: {exam_id: 1}})
+        Promise.all([examPromise, questionsPromise]).then(function(results){
+            let exam = results[0];
+            let questions = results[1];
+            let testCasePromises = [];
+            questions.forEach(i => {
+                let promise = db.TestCase.findAll({where:{question_id: i.id}});
+                testCasePromises.push(promise);
+            });
+            Promise.all(testCasePromises).then(testCases => {
+                for(let i = 0; i < testCases.length; i++) {
+                    questions[i]['test_cases'] = testCases[i]
+                }
+                /////////////////////////////////////////////////////////
+                //COMPILE TEMPLATE WITH EXAM OBJECT AND SEND TO CLIENT //
+                /////////////////////////////////////////////////////////
+            });
+            exam_data = exam;
+            exam_data['questions'] = questions;
 
+            /*
+            exam_data = {
+                "id": exam.id,
+                "exam_title": exam.title,
+                "open_date": exam.open_date,
+                "close_date": exam.close_date,
+                "rules_stmt": exam.rules_stmt,
+                "time_limit": exam.time_limit,
+                "section_id": exam.section_id,
 
+                "questions":[
+                    Should contain all question objects in here, example question info:
+            {
+                "id" : id,
+                "prompt" : prompt,
+                "graphic" : graphic,
+                "starter_code" : starter_code,
+                "average_score" : average_score,
+                "rubric" : rubric
+                "pts_test_case" : pts_test_case,
+                "pts_graded" : pts_graded
+
+                "test_cases":[
+                contains all test cases, example:
+                {
+                    "id": id,
+                    "input" : input,
+                    "expected_output" : expected_output
+                },
+            ]
+            },
+
+            ]
+        }
+        */
+        });
     });
 
     /**
