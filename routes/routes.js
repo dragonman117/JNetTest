@@ -4,7 +4,7 @@
  *
  * posts for these:
  * /data/exam/create
- * /data/exam/edit/:id
+ * DONE /data/exam/edit/:id
  * /data/exam/delete/:id
  * /data/question/create
  * /data/question/edit/:id
@@ -15,7 +15,7 @@
  * 
  * gets for these:
  * /data/class_section/:id
- * /data/exam/edit/:id
+ * NEEDS CALL TO HBS /data/exam/edit/:id
  * /data/question/edit/:id
  * /data/t_case/edit/:id
  */
@@ -81,7 +81,7 @@ module.exports = function(app, passport) {
      * Get all the test cases from the questions
      */
     app.get('/data/exam/:id/edit', function(req, res, next){
-        console.log('Received request for exam edit.')
+        console.log('Received request for exam edit.');
         var exam_data;
         let examPromise = db.Exam.findById(req.params['id']);
         var questionsPromise = db.Question.findAll({where: {exam_id: 1}})
@@ -144,10 +144,21 @@ module.exports = function(app, passport) {
 
     /**
      * Gets a single questions information, mainly with a list of other questions that produce an array of lists
+     * MAY NOT BE NEEDED
      */
-    app.get('/data/question/:id', function(req,res,next){
-         /**
 
+    app.get('/data/question/:id', function(req,res,next){
+        promises = [
+            db.Question.findById(req.params['id']),
+            db.TestCase.findAll({where: {question_id: req.params['id']}}),
+            ]
+
+        Promise.all(promises).then(function(results) {
+            let question = results[0];
+            question.dataValues['test_cases'] = results[1]
+            res.send(JSON.stringify(question));
+        });
+         /**
          {
             "id" : id,
             "prompt" : prompt,
@@ -170,7 +181,8 @@ module.exports = function(app, passport) {
 
     /**
      * gets a single test case, usually this function is used with  a list of other test cases to produce an array.
-     */
+     * ALMOST CERTAINLY NOT NEEDED
+    */
     app.get('/data/t_case/:id', function(req, res, next){
         /**
          * {
@@ -191,6 +203,16 @@ module.exports = function(app, passport) {
      */
     app.post('/data/exam/create', function(req, res, next){
         //create exam using basic info
+        db.Exam.Create({
+            title: 'Unititled Exam',
+            published: Date(),
+            open_date: Date(),
+            close_date: Date(),
+            rules_stmt: 'Rules for the exam. These will be displayed to the student.',
+            time_limit: '60'
+        }).then(fucntion({
+            //Redirect to Exam Edit page.
+        }));
         //res.render('/data/exam/' + id_num)
     });
 
@@ -203,6 +225,11 @@ module.exports = function(app, passport) {
         //exam = database.getExam(req.params['id']);
         //change exam info
         //refresh page
+        exam = req.body;
+        db.Exam.update(exam, {where: {id: req.params['id']}});
+        res.sendStatus(200);
+        res.end();
+        //REFRESH PAGE?
     });
 
     /**
