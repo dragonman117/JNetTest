@@ -16,7 +16,7 @@ var session = require('express-session');
 app = express();
 app.db = require('./config/db.js');
 
-/**
+ /**
  * Views info...
  */
 app.set('views', path.join(__dirname, 'views'));
