@@ -4,7 +4,7 @@
  *
  * posts for these:
  * /data/exam/create
- * /data/exam/edit/:id
+ * DONE /data/exam/edit/:id
  * /data/exam/delete/:id
  * /data/question/create
  * /data/question/edit/:id
@@ -15,7 +15,7 @@
  * 
  * gets for these:
  * /data/class_section/:id
- * /data/exam/edit/:id
+ * NEEDS CALL TO HBS /data/exam/edit/:id
  * /data/question/edit/:id
  * /data/t_case/edit/:id
  */
@@ -23,6 +23,7 @@
 
 //Get Lang
 lang = require("../lang/lang.eng.js");
+db = require("../config/db.js");
 
 hbs = require('hbs');
 hbs.registerPartials(__dirname + '/../views/partials');
@@ -80,53 +81,84 @@ module.exports = function(app, passport) {
      * Get all the test cases from the questions
      */
     app.get('/data/exam/:id/edit', function(req, res, next){
-        /**
-         * var exam_data = {
-         *      "exam_id": exam_id,
-         *      "exam_title": exam_title,
-         *      "open_date": open_date,
-         *      "close_date": close_date,
-         *      "rules_stmt": rules_stmt,
-         *      "time_limit": time_limit,
-         *      "section_id": section_id,
-         *
-         *      "questions":[
-         *          Should contain all question objects in here, example question info:
-         *          {
-         *              "id" : id,
-         *              "prompt" : prompt,
-         *              "graphic" : graphic,
-         *              "starter_code" : starter_code,
-         *              "average_score" : average_score,
-         *              "rubric" : rubric
-         *              "pts_test_case" : pts_test_case,
-         *              "pts_graded" : pts_graded
-         *
-         *              "test_cases":[
-         *              contains all test cases, example:
-         *                  {
-         *                      "input" : input,
-         *                      "expected_output" : expected_output
-         *                  },
-         *              ]
-         *          },
-         *
-         *      ]
-         *
-         *
-         * }
-         *
-         */
+        console.log('Received request for exam edit.');
+        var exam_data;
+        let examPromise = db.Exam.findById(req.params['id']);
+        var questionsPromise = db.Question.findAll({where: {exam_id: 1}})
+        Promise.all([examPromise, questionsPromise]).then(function(results){
+            let exam = results[0];
+            let questions = results[1];
+            let testCasePromises = [];
+            questions.forEach(i => {
+                let promise = db.TestCase.findAll({where:{question_id: i.id}});
+                testCasePromises.push(promise);
+            });
+            Promise.all(testCasePromises).then(testCases => {
+                for(let i = 0; i < testCases.length; i++) {
+                    questions[i]['test_cases'] = testCases[i]
+                }
+                /////////////////////////////////////////////////////////
+                //COMPILE TEMPLATE WITH EXAM OBJECT AND SEND TO CLIENT //
+                /////////////////////////////////////////////////////////
+            });
+            exam_data = exam;
+            exam_data['questions'] = questions;
 
+            /*
+            exam_data = {
+                "id": exam.id,
+                "exam_title": exam.title,
+                "open_date": exam.open_date,
+                "close_date": exam.close_date,
+                "rules_stmt": exam.rules_stmt,
+                "time_limit": exam.time_limit,
+                "section_id": exam.section_id,
 
+                "questions":[
+                    Should contain all question objects in here, example question info:
+            {
+                "id" : id,
+                "prompt" : prompt,
+                "graphic" : graphic,
+                "starter_code" : starter_code,
+                "average_score" : average_score,
+                "rubric" : rubric
+                "pts_test_case" : pts_test_case,
+                "pts_graded" : pts_graded
+
+                "test_cases":[
+                contains all test cases, example:
+                {
+                    "id": id,
+                    "input" : input,
+                    "expected_output" : expected_output
+                },
+            ]
+            },
+
+            ]
+        }
+        */
+        });
     });
 
     /**
      * Gets a single questions information, mainly with a list of other questions that produce an array of lists
+     * MAY NOT BE NEEDED
      */
-    app.get('/data/question/:id', function(req,res,next){
-         /**
 
+    app.get('/data/question/:id', function(req,res,next){
+        promises = [
+            db.Question.findById(req.params['id']),
+            db.TestCase.findAll({where: {question_id: req.params['id']}}),
+            ]
+
+        Promise.all(promises).then(function(results) {
+            let question = results[0];
+            question.dataValues['test_cases'] = results[1]
+            res.send(JSON.stringify(question));
+        });
+         /**
          {
             "id" : id,
             "prompt" : prompt,
@@ -149,7 +181,8 @@ module.exports = function(app, passport) {
 
     /**
      * gets a single test case, usually this function is used with  a list of other test cases to produce an array.
-     */
+     * ALMOST CERTAINLY NOT NEEDED
+    */
     app.get('/data/t_case/:id', function(req, res, next){
         /**
          * {
@@ -170,6 +203,16 @@ module.exports = function(app, passport) {
      */
     app.post('/data/exam/create', function(req, res, next){
         //create exam using basic info
+        db.Exam.Create({
+            title: 'Unititled Exam',
+            published: Date(),
+            open_date: Date(),
+            close_date: Date(),
+            rules_stmt: 'Rules for the exam. These will be displayed to the student.',
+            time_limit: '60'
+        }).then(fucntion({
+            //Redirect to Exam Edit page.
+        }));
         //res.render('/data/exam/' + id_num)
     });
 
@@ -182,6 +225,11 @@ module.exports = function(app, passport) {
         //exam = database.getExam(req.params['id']);
         //change exam info
         //refresh page
+        exam = req.body;
+        db.Exam.update(exam, {where: {id: req.params['id']}});
+        res.sendStatus(200);
+        res.end();
+        //REFRESH PAGE?
     });
 
     /**
