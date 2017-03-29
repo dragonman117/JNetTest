@@ -39,7 +39,7 @@ module.exports = function(app, passport) {
         console.log(req.body);
         app.db.User.find({where:{a_num: req.body.a_num}}).then(function(user){
             if(!user){
-                app.db.User.create({a_num: req.body.a_num, password: req.body.password}).error(function(err){
+                app.db.User.create({a_num: req.body.a_num, password: req.body.password, first_name: req.body.first_name, last_name: req.body.last_name}).error(function(err){
                     console.log(err);
                 });
                 res.json({status:"user created"})
@@ -82,76 +82,19 @@ module.exports = function(app, passport) {
      */
     app.get('/data/exam/:id/edit', function(req, res, next){
         console.log('Received request for exam edit.');
-        var exam_data;
-        let examPromise = db.Exam.findById(req.params['id']);
-        var questionsPromise = db.Question.findAll({where: {exam_id: 1}})
-        Promise.all([examPromise, questionsPromise]).then(function(results){
-            let exam = results[0];
-            let questions = results[1];
-            let testCasePromises = [];
-            questions.forEach(i => {
-                let promise = db.TestCase.findAll({where:{question_id: i.id}});
-                testCasePromises.push(promise);
-            });
-            Promise.all(testCasePromises).then(testCases => {
-                for(let i = 0; i < testCases.length; i++) {
-                    questions[i]['test_cases'] = testCases[i]
-                }
-                /////////////////////////////////////////////////////////
-                //COMPILE TEMPLATE WITH EXAM OBJECT AND SEND TO CLIENT //
-                /////////////////////////////////////////////////////////
-            });
-            exam_data = exam;
-            exam_data['questions'] = questions;
-
-            /*
-            exam_data = {
-                "id": exam.id,
-                "exam_title": exam.title,
-                "open_date": exam.open_date,
-                "close_date": exam.close_date,
-                "rules_stmt": exam.rules_stmt,
-                "time_limit": exam.time_limit,
-                "section_id": exam.section_id,
-
-                "questions":[
-                    Should contain all question objects in here, example question info:
-            {
-                "id" : id,
-                "prompt" : prompt,
-                "graphic" : graphic,
-                "starter_code" : starter_code,
-                "average_score" : average_score,
-                "rubric" : rubric
-                "pts_test_case" : pts_test_case,
-                "pts_graded" : pts_graded
-
-                "test_cases":[
-                contains all test cases, example:
-                {
-                    "id": id,
-                    "input" : input,
-                    "expected_output" : expected_output
-                },
-            ]
-            },
-
-            ]
-        }
-        */
-        });
+        exam = getExamById(req.params["id"]);
+        res.render('exam_edit', exam);
     });
 
     /**
      * Gets a single questions information, mainly with a list of other questions that produce an array of lists
      * MAY NOT BE NEEDED
      */
-
     app.get('/data/question/:id', function(req,res,next){
         promises = [
             db.Question.findById(req.params['id']),
             db.TestCase.findAll({where: {question_id: req.params['id']}}),
-            ]
+            ];
 
         Promise.all(promises).then(function(results) {
             let question = results[0];
@@ -190,10 +133,6 @@ module.exports = function(app, passport) {
          *   "expected_output" : expected_output,
          * }
          */
-
-
-
-
     });
 
     /**
@@ -201,7 +140,7 @@ module.exports = function(app, passport) {
      * title, open_date, close_date, rules_stmt, time_limit, section_id
      * then it should redirect to the exam editing page
      */
-    app.post('/data/exam/create', function(req, res, next){
+    app.get('/data/exam/create', function(req, res, next){
         //create exam using basic info
         db.Exam.Create({
             title: 'Unititled Exam',
@@ -211,9 +150,8 @@ module.exports = function(app, passport) {
             rules_stmt: 'Rules for the exam. These will be displayed to the student.',
             time_limit: '60'
         }).then(fucntion({
-            //Redirect to Exam Edit page.
+            //Redirect to Exam Edit page?
         }));
-        //res.render('/data/exam/' + id_num)
     });
 
     /**
@@ -226,17 +164,17 @@ module.exports = function(app, passport) {
         //change exam info
         //refresh page
         exam = req.body;
-        db.Exam.update(exam, {where: {id: req.params['id']}});
-        res.sendStatus(200);
-        res.end();
-        //REFRESH PAGE?
+        db.Exam.update(exam, {where: {id: req.params['id']}}).then(function(exam) {
+            res.sendStatus(200);
+            res.end();
+        });
     });
 
     /**
      * Deletes an exam, since questions can be attached to multiple exams, questions should only be deleted if tied to
      * this exam alone. Finally, delete the exam with id
      */
-    app.post('/data/exam/delete/:id', function(req, res, next){
+    app.get('/data/exam/delete/:id', function(req, res, next){
         //exam = database.getExam(req.params['id']);
         //dereference class section from this exam
         //dereference questions from this exam, if question is unattached, delete it
@@ -246,10 +184,16 @@ module.exports = function(app, passport) {
     /**
      * Creates an empty question that takes exam_id as input:
      */
-    app.post('/data/question/create', function(req, res, next){
+    app.get('/data/question/create', function(req, res, next){
         //create new question
         //attach exam to question and vice versa
         //refresh page
+        db.Question.create({
+            exam_id: req.exam_id
+        }).then(function(question){
+            res.send(question.id);
+            res.end();
+        })
     });
 
     /**
@@ -277,6 +221,7 @@ module.exports = function(app, passport) {
      * Creates an empty test case that takes parameter 'question_id'
      */
     app.post('/data/t_case/create', function(req, res, next){
+
         //create test case
         //attach test case to req.question_id and vice versa
         //refresh page
@@ -287,23 +232,20 @@ module.exports = function(app, passport) {
      * input, expected_output
      */
     app.post('/data/t_case/edit/:id', function(req, res, next){
-        //test_case = database.getTestCase(req.params['id']);
         //change test_case info
         //referesh page
+        //test_case = database.getTestCase(req.params['id']);
     });
 
     /**
      * First dereferences a test case from all its questions,
      * then deletes the test case
      */
-    app.post('/data/t_case/delete/:id', function(req, res, next){
+    app.get('/data/t_case/delete/:id', function(req, res, next){
         //test_case = database.getTestCase(req.params['id']);
         //dereference questions from test case and vice versa
         //delete test case
     });
-
-
-
 
     app.get('/error', function(req, res, next){
         let response = {
@@ -317,6 +259,31 @@ module.exports = function(app, passport) {
         res.json({hasError: true, message:lang.notAuth});
     });
 };
+
+function getExamById(id){
+    var exam_data;
+    let examPromise = db.Exam.findById(req.params['id']);
+    var questionsPromise = db.Question.findAll({where: {exam_id: 1}})
+    Promise.all([examPromise, questionsPromise]).then(function(results){
+        let exam = results[0];
+        let questions = results[1];
+        let testCasePromises = [];
+        questions.forEach(i => {
+            let promise = db.TestCase.findAll({where:{question_id: i.id}});
+            testCasePromises.push(promise);
+        });
+        Promise.all(testCasePromises).then(testCases => {
+            for(let i = 0; i < testCases.length; i++) {
+                questions[i]['test_cases'] = testCases[i]
+            }
+            //TEST THIS STILL ONCE THE VIEW IS MADE
+            res.render('exam_edit', exam);
+        });
+        exam_data = exam;
+        exam_data['questions'] = questions;
+        return exam;
+    });
+}
 
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
