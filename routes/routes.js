@@ -25,8 +25,6 @@
 lang = require("../lang/lang.eng.js");
 db = require("../config/db.js");
 
-hbs = require('hbs');
-hbs.registerPartials(__dirname + '/../views/partials');
 
 
 module.exports = function(app, passport) {
@@ -80,7 +78,7 @@ module.exports = function(app, passport) {
      * Get all the question information from the exam
      * Get all the test cases from the questions
      */
-    app.get('/data/exam/:id/edit', function(req, res, next){
+    app.get('/exam/edit/:id', function(req, res, next){
         console.log('Received request for exam edit.');
         exam = getExamById(req.params["id"]);
         res.render('exam_edit', exam);
@@ -101,25 +99,6 @@ module.exports = function(app, passport) {
             question.dataValues['test_cases'] = results[1]
             res.send(JSON.stringify(question));
         });
-         /**
-         {
-            "id" : id,
-            "prompt" : prompt,
-            "graphic" : graphic,
-            "starter_code" : starter_code,
-            "average_score" : average_score,
-            "rubric" : rubric
-            "pts_test_case" : pts_test_case,
-            "pts_graded" : pts_graded
-
-            "test_cases":[
-               contains all test cases, example:
-               {
-               "input" : input,
-               "expected_output" : expected_output
-             ]
-         }
-         **/
     });
 
     /**
@@ -142,16 +121,16 @@ module.exports = function(app, passport) {
      */
     app.get('/data/exam/create', function(req, res, next){
         //create exam using basic info
-        db.Exam.Create({
+        db.Exam.create({
             title: 'Unititled Exam',
             published: Date(),
             open_date: Date(),
             close_date: Date(),
             rules_stmt: 'Rules for the exam. These will be displayed to the student.',
             time_limit: '60'
-        }).then(fucntion({
-            //Redirect to Exam Edit page?
-        }));
+        }).then(function(exam){
+            res.redirect('/data/exam/' + exam.id + '/edit');
+        });
     });
 
     /**
@@ -174,11 +153,18 @@ module.exports = function(app, passport) {
      * Deletes an exam, since questions can be attached to multiple exams, questions should only be deleted if tied to
      * this exam alone. Finally, delete the exam with id
      */
+    //NEEDS TESTING
     app.get('/data/exam/delete/:id', function(req, res, next){
         //exam = database.getExam(req.params['id']);
         //dereference class section from this exam
         //dereference questions from this exam, if question is unattached, delete it
         //delete exam
+        exam = getExamById(req.params['id']);
+        exam.questions.forEach(x=> {
+            question.test_cases.forEach(y => db.TestCase.destroy(y))
+            db.Question.destroy(y);
+        });
+        db.Exam.destroy(exam);
     });
 
     /**
@@ -191,7 +177,7 @@ module.exports = function(app, passport) {
         db.Question.create({
             exam_id: req.exam_id
         }).then(function(question){
-            res.send(question.id);
+            res.send(question);
             res.end();
         })
     });
@@ -203,6 +189,11 @@ module.exports = function(app, passport) {
     app.post('/data/question/edit/:id', function(req, res, next){
         //question = database.getQuestion(req.params['id']);
         //update question with new info from req
+        question = req.body;
+        db.Question.update(question, {where: {id: req.params['id']}}).then(function(question){
+            res.sendStatus(200);
+            res.end();
+        });
     });
 
     /**
@@ -210,7 +201,7 @@ module.exports = function(app, passport) {
      * then dereferences from test cases
      * Then deletes the question
      */
-    app.post('/data/question/delete/:id', function(req, res, next){
+    app.get('/data/question/delete/:id', function(req, res, next){
         //question = database.getQuestion(req.params['id']);
         //dereference question from all exams and vice versa
         //dereference test cases, if test case has no more questions attached, delete it too
@@ -262,7 +253,7 @@ module.exports = function(app, passport) {
 
 function getExamById(id){
     var exam_data;
-    let examPromise = db.Exam.findById(req.params['id']);
+    let examPromise = db.Exam.findById(id);
     var questionsPromise = db.Question.findAll({where: {exam_id: 1}})
     Promise.all([examPromise, questionsPromise]).then(function(results){
         let exam = results[0];
@@ -276,12 +267,10 @@ function getExamById(id){
             for(let i = 0; i < testCases.length; i++) {
                 questions[i]['test_cases'] = testCases[i]
             }
-            //TEST THIS STILL ONCE THE VIEW IS MADE
-            res.render('exam_edit', exam);
+            exam_data = exam;
+            exam_data['questions'] = questions;
+            return exam;
         });
-        exam_data = exam;
-        exam_data['questions'] = questions;
-        return exam;
     });
 }
 

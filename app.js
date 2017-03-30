@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var passportConfig = require("./config/passport.js");
 var session = require('express-session');
+var hbs = require('hbs');
 
 
 /**
@@ -21,6 +22,7 @@ app.db = require('./config/db.js');
  */
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
+hbs.registerPartials(__dirname + '/../views/partials');
 
 /**
  * Middleware
