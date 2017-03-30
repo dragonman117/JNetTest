@@ -26,7 +26,6 @@ lang = require("../lang/lang.eng.js");
 db = require("../config/db.js");
 
 
-
 module.exports = function(app, passport) {
     app.get('/', function(req,res){
       res.render('main_with_sidebar', {classSections:['CS1400', 'MATH2200','DEATH2250']});
@@ -71,7 +70,6 @@ module.exports = function(app, passport) {
         res.json(user);
     });
 
-
     /**
      * Big exam editing page, this should give a lot of information:
      * Get the exam information
@@ -85,8 +83,7 @@ module.exports = function(app, passport) {
     });
 
     /**
-     * Gets a single questions information, mainly with a list of other questions that produce an array of lists
-     * MAY NOT BE NEEDED
+     * Gets a single question's information, mainly with a list of other questions that produce an array of lists
      */
     app.get('/data/question/:id', function(req,res,next){
         promises = [
@@ -103,7 +100,6 @@ module.exports = function(app, passport) {
 
     /**
      * gets a single test case, usually this function is used with  a list of other test cases to produce an array.
-     * ALMOST CERTAINLY NOT NEEDED
     */
     app.get('/data/t_case/:id', function(req, res, next){
         /**
@@ -163,8 +159,8 @@ module.exports = function(app, passport) {
         exam.questions.forEach(x=> {
             question.test_cases.forEach(y => db.TestCase.destroy(y))
             db.Question.destroy(y);
+            db.Exam.destroy(exam);
         });
-        db.Exam.destroy(exam);
     });
 
     /**
@@ -202,30 +198,36 @@ module.exports = function(app, passport) {
      * Then deletes the question
      */
     app.get('/data/question/delete/:id', function(req, res, next){
-        //question = database.getQuestion(req.params['id']);
-        //dereference question from all exams and vice versa
-        //dereference test cases, if test case has no more questions attached, delete it too
-        //delete question
+        question = db.Question.findById(req.params['id']).then(function() {
+            question.test_cases.forEach(y => db.TestCase.destroy(y));
+            db.Question.destroy(exam);
+        });
     });
 
     /**
      * Creates an empty test case that takes parameter 'question_id'
      */
-    app.post('/data/t_case/create', function(req, res, next){
-
-        //create test case
-        //attach test case to req.question_id and vice versa
-        //refresh page
+    app.get('/data/test_case/create', function(req, res, next){
+        db.TestCase.create({
+            exam_id: req.question_id
+        }).then(function(test_case){
+            res.send(test_case);
+            res.end();
+        });
     });
 
     /**
      * Edits a test cases attributes:
      * input, expected_output
      */
-    app.post('/data/t_case/edit/:id', function(req, res, next){
+    app.post('/data/test_case/edit/:id', function(req, res, next){
         //change test_case info
-        //referesh page
         //test_case = database.getTestCase(req.params['id']);
+        let test_case = req.body;
+        db.TestCase.update(test_case, {where: {id: req.params['id']}}).then(function(test_case){
+            res.sendStatus(200);
+            res.end();
+        });
     });
 
     /**
@@ -233,9 +235,7 @@ module.exports = function(app, passport) {
      * then deletes the test case
      */
     app.get('/data/t_case/delete/:id', function(req, res, next){
-        //test_case = database.getTestCase(req.params['id']);
-        //dereference questions from test case and vice versa
-        //delete test case
+        db.TestCase.destroy({where: {id: req.params['id']}});
     });
 
     app.get('/error', function(req, res, next){
