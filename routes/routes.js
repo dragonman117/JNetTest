@@ -1,17 +1,21 @@
 //Get Lang
 lang = require("../lang/lang.eng.js");
 
+hbs = require('hbs');
+hbs.registerPartials(__dirname + '/../views/partials');
+
+
 module.exports = function(app, passport) {
     app.get('/', function(req,res){
-        //res.json({status:"found home"});
-        res.render("error", dataObj)
+      res.render('main_with_sidebar', {classSections:['CS1400', 'MATH2200','DEATH2250']});
+      //res.json({status:"found home"});
     });
 
     app.post('/signup', function(req, res, next){
         console.log(req.body);
-        app.db.User.find({where:{username: req.body.username}}).then(function(user){
+        app.db.User.find({where:{a_num: req.body.a_num}}).then(function(user){
             if(!user){
-                app.db.User.create({username: req.body.username, password: req.body.password}).error(function(err){
+                app.db.User.create({a_num: req.body.a_num, password: req.body.password}).error(function(err){
                     console.log(err);
                 });
                 res.json({status:"user created"})

@@ -16,7 +16,7 @@ var session = require('express-session');
 app = express();
 app.db = require('./config/db.js');
 
-/**
+ /**
  * Views info...
  */
 app.set('views', path.join(__dirname, 'views'));
@@ -50,6 +50,7 @@ app.use(passport.session());
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.static(path.join(__dirname, 'public')));
 require('./routes/routes.js')(app, passport);
+require('./routes/student.js')(app, passport);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
