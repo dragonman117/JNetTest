@@ -25,6 +25,8 @@
 lang = require("../lang/lang.eng.js");
 db = require("../config/db.js");
 
+hbs = require('hbs');
+hbs.registerPartials(__dirname + '/../views/partials');
 
 module.exports = function(app, passport) {
     app.get('/', function(req,res){
