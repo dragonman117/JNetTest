@@ -44,6 +44,10 @@ var buildRelations = function() {
     db.Section.hasMany(db.Exam, {foreignKey: 'section_id'});
     db.UserSection.belongsTo(db.User, {foreignKey: 'user_id'});
     db.UserSection.belongsTo(db.Section, {foreignKey: 'section_id'});
+    db.Question.hasMany(db.Response, {foreignKey: 'question_id'});
+    db.Exam.hasMany(db.Submission, {foreignKey: 'exam_id'});
+    db.User.hasMany(db.Submission, {foreignKey: 'user_id'});
+    db.Submission.hasMany(db.Response, {foreignKey: 'submission_id'});
 }
 
 importModels();
