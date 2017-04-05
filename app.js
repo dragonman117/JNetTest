@@ -49,6 +49,8 @@ app.use(passport.session());
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.static(path.join(__dirname, 'public')));
+
+require('./routes/student.js')(app, passport);
 require('./routes/routes.js')(app, passport);
 
 // catch 404 and forward to error handler
