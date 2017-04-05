@@ -17,7 +17,10 @@ module.exports = {
         }
         globals.base_url = genConfig.rel_path;
         globals.full_url = genConfig.full_path;
+        globals.classSections = ['CS1400', 'MATH2200','DEATH2250'];
         req.viewData = globals;
+
         return next();
+
     }
 };
