@@ -35,10 +35,6 @@ module.exports = function(app, passport) {
       //res.json({status:"found home"});
     });
 
-    app.get('/dashboard', function(req, res){
-        //console.log(req.session.user.username);
-        res.render('main_with_sidebar', {username: req.session.passport.user.username, classSections:['CS1400', 'MATH2200','DEATH2250']})
-    })
 
     app.post('/signup', function(req, res, next){
         console.log(req.body);

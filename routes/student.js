@@ -32,5 +32,6 @@ module.exports = function (app, passport) {
         let testList = ["Dummy Test", "Dummy Test", "Dummy Test", "Dummy Test", "Dummy Test"];
         req.viewData.tests= testList;
         res.render("student_dashboard", req.viewData);
+        //res.render('main_with_sidebar', {username: req.session.passport.user.username, classSections:['CS1400', 'MATH2200','DEATH2250']})
     });
 };
