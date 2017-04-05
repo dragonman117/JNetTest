@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes){
                 //type: DataTypes.ENUM('STUDENT', 'INSTRUCTOR', 'TA', 'PROCTOR'),
                 type: DataTypes.STRING,
                 unique: false,
-                allowNull: false
+                allowNull: false,
             }
         }
     );

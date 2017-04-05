@@ -8,7 +8,8 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             unique: true,
             allownull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         prompt: {
             type: DataTypes.TEXT,

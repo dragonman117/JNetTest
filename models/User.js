@@ -5,9 +5,10 @@ module.exports = function(sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 unique: true,
                 allowNull: false,
-                primaryKey: true
+                primaryKey: true,
+                autoIncrement: true
             },
-            a_num: {
+            username: {
                 type: DataTypes.STRING,
                 unique: true,
                 allowNull: false
@@ -30,7 +31,7 @@ module.exports = function(sequelize, DataTypes) {
         {
             hooks: {
                 beforeValidate: function(user, opt){
-                    //a_num normalization
+                    //username normalization
                     if(typeof user.email == "string"){
                         user.email = user.email.toLowerCase();
                     }
