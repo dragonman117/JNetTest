@@ -10,7 +10,7 @@
 
 @keyframes graphicsIn {
     from{height: 0vh; margin-top: 0px;}
-    to{height: 25vh; margin-top: -25.1vh;}
+    to{height: 25vh; margin-top: -25vh;}
 }
 
 #console {
@@ -18,7 +18,7 @@
     display: none;
     height: 25vh;
     z-index: 40;
-    margin-top: -25.1vh;
+    margin-top: -25vh;
     -webkit-animation-name: wkgraphicsIn;
     -webkit-animation-duration: 1s;
     animation-name: graphicsIn;
