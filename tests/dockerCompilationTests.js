@@ -1,12 +1,13 @@
 import test from 'ava';
 import Compilation from '../lib/dockerSystem';
+let sysConfig = require("../config/sysConfig.json");
 
 
 //Create Tests Data Objects
 
 //Test basic hello world
 let test0Obj =  {
-    rootpath: "/Users/timothyferrell/WebstormProjects/JNetTest",
+    rootpath: sysConfig.docker_rootpath,
     folder: "tstFolder",
     fileName: "main.cpp",
     code: "#include <iostream> \n\nusing namespace std;\n\nint main(){ \n    cout << \"Hello World\" << endl;\n    return 0;\n}",
@@ -20,8 +21,8 @@ let test0Obj =  {
 
 //Test infinite Loop
 let test1Obj = {
-    rootpath: "/Users/timothyferrell/WebstormProjects/JNetTest",
-    folder: "tstFolder",
+    rootpath: sysConfig.docker_rootpath,
+    folder: "tstFolder2",
     fileName: "main.cpp",
     code: "#include <iostream> \n\nusing namespace std;\n\nint main(){ \n    while(true){}\n    return 0;\n}",
     langName: "C++",
@@ -34,8 +35,8 @@ let test1Obj = {
 
 //Fork Bomb loop
 let test2Obj = {
-    rootpath: "/Users/timothyferrell/WebstormProjects/JNetTest",
-    folder: "tstFolder",
+    rootpath: sysConfig.docker_rootpath,
+    folder: "tstFolder3",
     fileName: "main.cpp",
     code: "#include <iostream> \n#include <unistd.h>\n\nusing namespace std;\n\nint main(){ \n    while(1){\n        fork();\n    }\n    return 0;\n}",
     langName: "C++",
@@ -48,8 +49,8 @@ let test2Obj = {
 
 //Test basic will not compile
 let test3Obj =  {
-    rootpath: "/Users/timothyferrell/WebstormProjects/JNetTest",
-    folder: "tstFolder",
+    rootpath: sysConfig.docker_rootpath,
+    folder: "tstFolder4",
     fileName: "main.cpp",
     code: "#include <iostream>\n\nint main(){ \n    cout << \"Hello World\" << endl\n    return 0;\n}",
     langName: "C++",
