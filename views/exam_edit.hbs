@@ -1,0 +1,57 @@
+
+
+<body>
+
+
+{{> main_with_sidebar_start}}
+
+<!--set action="pageid"-->
+<form method="post">
+    <fieldset>
+    <!--int id-->
+        <div class="form-group">
+            <label for="id">Exam ID</label>
+            <input type="number" id="id" class="form-control" value={{exam_id}} aria-describedby="examID" readonly>
+        </div>
+    <!--string title-->
+        <div class="form-group">
+            <label for="title">Exam Title</label>
+            <input type="text" id="title" class="form-control" placeholder="CS1400 Midterm" aria-describedby="Exam Title">
+        </div>
+    <!--bool published-->
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" id="published" data-toggle="toggle">
+                Publish Exam
+            </label>
+        </div>
+    <!--date open_date-->
+        <div class="form-group">
+            <label for="open_date">Exam Open Date</label>
+            <input type="date" id="open_date" class="form-control" placeholder="12-30-1999" aria-describedby="Exam Open Date">
+        </div>
+    <!--date close_date-->
+        <div class="form-group">
+            <label for="close_date">Exam Close Date</label>
+            <input type="date" id="close_date" class="form-control" placeholder="12-31-1999" aria-describedby="Exam Close Date">
+        </div>
+    <!--text rules_stmt-->
+        <div class="form-group">
+            <label for="rules_stmt">Rules Statement</label>
+            <textarea id="rules_stmt" class="form-control" rows="5" aria-describedby="Rules Statement"></textarea>
+        </div>
+    <!--int time_limit //in minutes-->
+        <div class="form-group">
+            <label for="time_limit">Time Limit (Minutes)</label>
+            <input type="number" id="time_limit" class="form-control" placeholder="90" aria-describedby="Time Limit">
+        </div>
+    <!--submit-->
+        <input type="submit" value="Save Exam Data">
+    </fieldset>
+</form>
+
+{{> main_with_sidebar_end}}
+
+
+
+</body>

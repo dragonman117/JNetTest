@@ -15,8 +15,9 @@ module.exports = function(app, passport) {
         //dereference questions from this exam, if question is unattached, delete it
         //delete exam
         exam = getExamById(req.params['id']);
+        // x parameter marked as unused
         exam.questions.forEach(x => {
-            question.test_cases.forEach(y => db.TestCase.destroy(y))
+            question.test_cases.forEach(y => db.TestCase.destroy(y));
             db.Question.destroy(y);
             db.Exam.destroy(exam);
         });
@@ -27,7 +28,7 @@ module.exports = function(app, passport) {
      * is update basic exam information:
      * Title, open_date, close_date, rule_stmt, time_limit
      */
-    app.post('/data/exam/edit/:id', function (req, res, next) {
+    app.post('/exam/edit/:id', function (req, res, next) {
         //exam = database.getExam(req.params['id']);
         //change exam info
         //refresh page
@@ -46,6 +47,7 @@ module.exports = function(app, passport) {
     app.get('/data/exam/create', function (req, res, next) {
         //create exam using basic info
         db.Exam.create({
+            //these field can, and probably should, be left blank. form has prompt text already included.
             title: 'Unititled Exam',
             published: Date(),
             open_date: Date(),
@@ -53,7 +55,7 @@ module.exports = function(app, passport) {
             rules_stmt: 'Rules for the exam. These will be displayed to the student.',
             time_limit: '60'
         }).then(function (exam) {
-            res.redirect('/data/exam/' + exam.id + '/edit');
+            res.redirect('/exam/edit/' + exam.id);
         });
     });
 
@@ -66,14 +68,15 @@ module.exports = function(app, passport) {
     app.get('/exam/edit/:id', function (req, res, next) {
         console.log('Received request for exam edit.');
         exam = getExamById(req.params["id"]);
-        res.render('exam_edit', exam);
+        console.log(exam, req.params["id"]);
+        res.render('exam_edit', {exam:exam});
     });
 };
 
 function getExamById(id){
     var exam_data;
     let examPromise = db.Exam.findById(id);
-    var questionsPromise = db.Question.findAll({where: {exam_id: 1}})
+    var questionsPromise = db.Question.findAll({where: {exam_id: 1}});
     Promise.all([examPromise, questionsPromise]).then(function(results){
         let exam = results[0];
         let questions = results[1];
@@ -91,4 +94,4 @@ function getExamById(id){
             return exam;
         });
     });
-};
+}
