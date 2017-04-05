@@ -1,5 +1,5 @@
 #editor{
-    min-height: 80vh;
+    min-height: 75vh;
 }
 .no-lr-pad{
     padding-left: 0 !important;
@@ -10,7 +10,7 @@
 
 @keyframes graphicsIn {
     from{height: 0vh; margin-top: 0px;}
-    to{height: 25vh; margin-top: -25vh;}
+    to{height: 25vh; margin-top: -25.1vh;}
 }
 
 #console {
@@ -18,7 +18,7 @@
     display: none;
     height: 25vh;
     z-index: 40;
-    margin-top: -25vh;
+    margin-top: -25.1vh;
     -webkit-animation-name: wkgraphicsIn;
     -webkit-animation-duration: 1s;
     animation-name: graphicsIn;
@@ -34,6 +34,10 @@
 .titlebar{
     height: 3vh;
     background-color: #595959;
+}
+
+.toggle-btn{
+    max-height: 3vh;
 }
 
 #compile-body{

@@ -18,10 +18,12 @@ $("#compile").on("click", function (e) {
 });
 
 $("#consoleOpen").on("click",function (e) {
+    $("#resultsOpen").css("display", "none");
     $("#console").css("display", "block");
 });
 
 $("#consoleClose").on("click",function (e) {
     $("#console").css("display", "none");
+    $("#resultsOpen").css("display", "block");
 });
 
