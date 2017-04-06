@@ -42,7 +42,7 @@ module.exports = function(app, passport) {
                 app.db.User.create({username: req.body.username, password: req.body.password, first_name: req.body.first_name, last_name: req.body.last_name}).error(function(err){
                     console.log(err);
                 });
-                res.json({status:"user created"})
+                res.redirect("/login");
             } else {
                 res.json({status:"user exists in db"});
             }
@@ -51,6 +51,10 @@ module.exports = function(app, passport) {
             console.log(e);
         });
     });
+
+    app.get('/signup', function(req, res, next){
+        res.render('signup');
+    })
 
     app.get('/login', function(req, res, next){
         res.render('login');
