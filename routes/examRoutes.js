@@ -33,7 +33,9 @@ module.exports = function(app, passport) {
         //change exam info
         //refresh page
         exam = req.body;
+        console.log(exam);
         db.Exam.update(exam, {where: {id: req.params['id']}}).then(function (exam) {
+            res.redirect('/exam/edit/' + req.params['id'])
             res.sendStatus(200);
             res.end();
         });
@@ -49,11 +51,7 @@ module.exports = function(app, passport) {
         db.Exam.create({
             //these field can, and probably should, be left blank. form has prompt text already included.
             title: 'Unititled Exam',
-            published: Date(),
-            open_date: Date(),
-            close_date: Date(),
-            rules_stmt: 'Rules for the exam. These will be displayed to the student.',
-            time_limit: '60'
+            published: false
         }).then(function (exam) {
             res.redirect('/exam/edit/' + exam.id);
         });
@@ -67,31 +65,35 @@ module.exports = function(app, passport) {
      */
     app.get('/exam/edit/:id', function (req, res, next) {
         console.log('Received request for exam edit.');
-        exam = getExamById(req.params["id"]);
-        console.log(exam, req.params["id"]);
-        res.render('exam_edit', {exam:exam});
+        getExamById(req.params["id"]).then(function (data) {
+            console.log(data);
+            res.render('exam_edit', data);
+        })
     });
 };
 
 function getExamById(id){
-    var exam_data;
-    let examPromise = db.Exam.findById(id);
-    var questionsPromise = db.Question.findAll({where: {exam_id: 1}});
-    Promise.all([examPromise, questionsPromise]).then(function(results){
-        let exam = results[0];
-        let questions = results[1];
-        let testCasePromises = [];
-        questions.forEach(i => {
-            let promise = db.TestCase.findAll({where:{question_id: i.id}});
-            testCasePromises.push(promise);
+    return new Promise((resolve, reject)=>{
+        let exam_data;
+        let examPromise = db.Exam.findById(id);
+        let questionsPromise = db.Question.findAll({where: {exam_id: 1}});
+        Promise.all([examPromise, questionsPromise]).then(function(results){
+            //console.log(JSON.parse(JSON.stringify(results)));
+            let exam = JSON.parse(JSON.stringify(results))[0];
+            let questions = JSON.parse(JSON.stringify(results))[1];
+            let testCasePromises = [];
+            questions.forEach(i => {
+                let promise = db.TestCase.findAll({where:{question_id: i.id}});
+                testCasePromises.push(promise);
+            });
+            Promise.all(testCasePromises).then(testCases => {
+                for(let i = 0; i < testCases.length; i++) {
+                    questions[i]['test_cases'] = testCases[i]
+                }
+                exam_data = exam;
+                exam_data['questions'] = questions;
+                resolve(exam_data);
+            });
         });
-        Promise.all(testCasePromises).then(testCases => {
-            for(let i = 0; i < testCases.length; i++) {
-                questions[i]['test_cases'] = testCases[i]
-            }
-            exam_data = exam;
-            exam_data['questions'] = questions;
-            return exam;
-        });
-    });
+    })
 }
