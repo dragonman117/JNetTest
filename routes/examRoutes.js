@@ -14,11 +14,15 @@ module.exports = function(app, passport) {
         //dereference class section from this exam
         //dereference questions from this exam, if question is unattached, delete it
         //delete exam
-        exam = getExamById(req.params['id']);
-        exam.questions.forEach(x => {
-            question.test_cases.forEach(y => db.TestCase.destroy(y))
-            db.Question.destroy(y);
-            db.Exam.destroy(exam);
+    db.Exam.findById(req.params['id'], {include: [{model: db.Question}]})
+        .then(exam => {
+           exam.Questions.forEach(function(question){
+               db.TestCase.destroy({where: {question_id: question.id}});
+               db.Question.destroy({where: {id: question.id}});
+           });
+           db.Exam.destroy({where: {id: req.params['id']}});
+           res.sendStatus(200);
+           res.end();
         });
     });
 
@@ -43,9 +47,10 @@ module.exports = function(app, passport) {
      * title, open_date, close_date, rules_stmt, time_limit, section_id
      * then it should redirect to the exam editing page
      */
-    app.get('/data/exam/create', function (req, res, next) {
+    app.get('/data/exam/create/:section_id', function (req, res, next) {
         //create exam using basic info
         db.Exam.create({
+            section_id: req.params['section_id'],
             title: 'Unititled Exam',
             published: Date(),
             open_date: Date(),

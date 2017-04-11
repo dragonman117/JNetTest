@@ -74,6 +74,18 @@ module.exports = function(app, passport) {
         delete user.password;
         res.json(user);
     });
+
+    app.get('/notAuthorised',function(req, res, next){
+        res.json({hasError: true, message:lang.notAuth});
+    });
+
+    app.get('/error', function(req, res, next){
+        let response = {
+            hasError: true,
+            errMessage: lang.loginErr
+        };
+        res.json(response);
+    });
 }
 
 // route middleware to make sure a user is logged in

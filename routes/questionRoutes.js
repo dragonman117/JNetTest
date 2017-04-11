@@ -1,7 +1,7 @@
 /**
  * Created by Chris on 3/31/2017.
  */
-
+require('./testCaseRoutes');
 module.exports = function(app, passport){
     /**
      * Gets a single question's information, mainly with a list of other questions that produce an array of lists
@@ -22,12 +22,12 @@ module.exports = function(app, passport){
     /**
      * Creates an empty question that takes exam_id as input:
      */
-    app.get('/data/question/create', function(req, res, next){
+    app.get('/data/question/create/:exam_id', function(req, res, next){
         //create new question
         //attach exam to question and vice versa
         //refresh page
         db.Question.create({
-            exam_id: req.exam_id
+            exam_id: req.params['exam_id']
         }).then(function(question){
             res.send(question);
             res.end();
@@ -54,9 +54,16 @@ module.exports = function(app, passport){
      * Then deletes the question
      */
     app.get('/data/question/delete/:id', function(req, res, next){
-        question = db.Question.findById(req.params['id']).then(function() {
-            question.test_cases.forEach(y => db.TestCase.destroy(y));
-            db.Question.destroy(exam);
+            db.TestCase.destroy({where: {question_id: req.params['id']}});
+            db.Question.destroy({where: {id: req.params['id']}});
+            res.sendStatus(200)
+            res.end()
         });
-    });
-}
+
+        /*
+        db.Question.destroy({where: {id: req.params['id']}}).then(function(){
+            res.sendStatus(200);
+            res.end();
+        });
+        */
+};
