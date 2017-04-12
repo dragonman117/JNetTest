@@ -14,12 +14,15 @@ module.exports = function(app, passport) {
         //dereference class section from this exam
         //dereference questions from this exam, if question is unattached, delete it
         //delete exam
-        exam = getExamById(req.params['id']);
-        // x parameter marked as unused
-        exam.questions.forEach(x => {
-            question.test_cases.forEach(y => db.TestCase.destroy(y));
-            db.Question.destroy(y);
-            db.Exam.destroy(exam);
+    db.Exam.findById(req.params['id'], {include: [{model: db.Question}]})
+        .then(exam => {
+           exam.Questions.forEach(function(question){
+               db.TestCase.destroy({where: {question_id: question.id}});
+               db.Question.destroy({where: {id: question.id}});
+           });
+           db.Exam.destroy({where: {id: req.params['id']}});
+           res.sendStatus(200);
+           res.end();
         });
     });
 
@@ -33,7 +36,6 @@ module.exports = function(app, passport) {
         //change exam info
         //refresh page
         exam = req.body;
-        console.log(exam);
         db.Exam.update(exam, {where: {id: req.params['id']}}).then(function (exam) {
             res.redirect('/exam/edit/' + req.params['id'])
         });
@@ -44,10 +46,10 @@ module.exports = function(app, passport) {
      * title, open_date, close_date, rules_stmt, time_limit, section_id
      * then it should redirect to the exam editing page
      */
-    app.get('/data/exam/create', function (req, res, next) {
+    app.get('/data/exam/create/:section_id', function (req, res, next) {
         //create exam using basic info
         db.Exam.create({
-            //these field can, and probably should, be left blank. form has prompt text already included.
+            section_id: req.params['section_id'],
             title: 'Unititled Exam',
             published: false
         }).then(function (exam) {
@@ -62,36 +64,34 @@ module.exports = function(app, passport) {
      * Get all the test cases from the questions
      */
     app.get('/exam/edit/:id', function (req, res, next) {
-        console.log('Received request for exam edit.');
-        getExamById(req.params["id"]).then(function (data) {
-            console.log(data);
-            res.render('exam_edit', data);
-        })
+        getExamById(req.params["id"]).then(exam =>
+        {
+            res.render('exam_edit', exam);
+        });
     });
 };
 
 function getExamById(id){
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
         let exam_data;
         let examPromise = db.Exam.findById(id);
-        let questionsPromise = db.Question.findAll({where: {exam_id: 1}});
-        Promise.all([examPromise, questionsPromise]).then(function(results){
-            //console.log(JSON.parse(JSON.stringify(results)));
-            let exam = JSON.parse(JSON.stringify(results))[0];
-            let questions = JSON.parse(JSON.stringify(results))[1];
+        var questionsPromise = db.Question.findAll({where: {exam_id: id}})
+        Promise.all([examPromise, questionsPromise]).then(function (results) {
+            let exam = JSON.parse(JSON.stringify(results[0]));
+            let questions = results[1];
             let testCasePromises = [];
             questions.forEach(i => {
-                let promise = db.TestCase.findAll({where:{question_id: i.id}});
+                let promise = db.TestCase.findAll({where: {question_id: i.id}});
                 testCasePromises.push(promise);
             });
             Promise.all(testCasePromises).then(testCases => {
-                for(let i = 0; i < testCases.length; i++) {
-                    questions[i]['test_cases'] = testCases[i]
+                for (let i = 0; i < testCases.length; i++) {
+                    questions[i]['dataValues']['test_cases'] = JSON.parse(JSON.stringify(testCases[i]))
                 }
                 exam_data = exam;
                 exam_data['questions'] = questions;
                 resolve(exam_data);
             });
         });
-    })
-}
+    });
+};
