@@ -10,7 +10,7 @@ module.exports = function(sequelize, DataTypes) {
                 autoIncrement: true
             },
             */
-            a_num: {
+            username: {
                 type: DataTypes.STRING,
                 unique: true,
                 allowNull: false

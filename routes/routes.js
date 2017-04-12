@@ -35,11 +35,11 @@ module.exports = function(app, passport) {
     });
 
     app.post('/signup', function (req, res, next) {
-        console.log(req.body);
-        app.db.User.find({where: {a_num: req.body.a_num}}).then(function (user) {
+        //console.log(req.body);
+        app.db.User.find({where: {username: req.body.username}}).then(function (user) {
             if (!user) {
                 app.db.User.create({
-                    a_num: req.body.a_num,
+                    username: req.body.username,
                     password: req.body.password,
                     first_name: req.body.first_name,
                     last_name: req.body.last_name
