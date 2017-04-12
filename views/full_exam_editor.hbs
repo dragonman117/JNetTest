@@ -1,0 +1,66 @@
+
+{{>header_start}}
+{{>header_end}}
+
+
+{{> main_with_sidebar_start}}
+
+<!--set action="pageid"-->
+<div class="mdl-grid">
+    <form method="post">
+        <fieldset>
+            <!--int id-->
+            <div class="form-group">
+                <label for="id">Exam ID</label>
+                <input name="id" type="number" id="id" class="form-control" value="{{id}}" aria-describedby="examID" readonly>
+            </div>
+            <!--string title-->
+            <div class="form-group">
+                <label for="title">Exam Title</label>
+                <input type="text" name="title" id="title" class="form-control" value="{{title}}" placeholder="CS1400 Midterm" aria-describedby="Exam Title">
+            </div>
+            <!--bool published-->
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="published" id="published" value="{{published}}" data-toggle="toggle">
+                    Publish Exam
+                </label>
+            </div>
+            <!--date open_date-->
+            <div class="form-group">
+                <label for="open_date">Exam Open Date</label>
+                <input type="date" name="open_date" id="open_date" class="form-control" value="{{open_date}}" placeholder="12-30-1999" aria-describedby="Exam Open Date">
+            </div>
+            <!--date close_date-->
+            <div class="form-group">
+                <label for="close_date">Exam Close Date</label>
+                <input type="date" name="close_date" id="close_date" class="form-control" value="{{close_date}}" placeholder="12-31-1999" aria-describedby="Exam Close Date">
+            </div>
+            <!--text rules_stmt-->
+            <div class="form-group">
+                <label for="rules_stmt">Rules Statement</label>
+                <textarea name="rules_stmt" id="rules_stmt" class="form-control" rows="5" aria-describedby="Rules Statement">{{rules_stmt}}</textarea>
+            </div>
+            <!--int time_limit //in minutes-->
+            <div class="form-group">
+                <label for="time_limit">Time Limit (Minutes)</label>
+                <input name="time_limit" type="number" id="time_limit" class="form-control" value="{{time_limit}}" placeholder="90" aria-describedby="Time Limit">
+            </div>
+            <!--submit-->
+            <input type="submit" value="Save Exam Data">
+        </fieldset>
+    </form>
+
+    <div class="mdl-grid">
+        <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+            {{#each questions}}
+                <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+                    <a href="/data/question/edit/{{this.id}}">Question: {{this.id}}</a>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+</div>
+
+{{> main_with_sidebar_end}}

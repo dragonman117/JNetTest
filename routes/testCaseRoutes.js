@@ -40,7 +40,7 @@ module.exports = function(app, passport) {
         //test_case = database.getTestCase(req.params['id']);
         let test_case = req.body;
         db.TestCase.update(test_case, {where: {id: req.params['id']}}).then(function (test_case) {
-            res.sendStatus(200);
+            res.status(200);
             res.end();
         });
     });
@@ -51,7 +51,7 @@ module.exports = function(app, passport) {
      */
     app.get('/data/test_case/delete/:id', function (req, res, next) {
         db.TestCase.destroy({where: {id: id}}).then(function () {
-            res.sendStatus(200);
+            res.status(200);
             res.end();
         })
     });

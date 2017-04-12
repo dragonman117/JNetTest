@@ -46,7 +46,7 @@ module.exports = function(app, passport) {
      * title, open_date, close_date, rules_stmt, time_limit, section_id
      * then it should redirect to the exam editing page
      */
-    app.post('/data/exam/create/:section_id', function (req, res, next) {
+    app.get('/data/exam/create/:section_id', function (req, res, next) {
         //create exam using basic info
         db.Exam.create({
             section_id: req.params['section_id'],
@@ -66,7 +66,9 @@ module.exports = function(app, passport) {
     app.get('/exam/edit/:id', function (req, res, next) {
         getExamById(req.params["id"]).then(exam =>
         {
-            res.render('exam_edit', exam);
+            //res.send(exam);
+            console.log(exam);
+            res.render('full_exam_editor', exam);
         });
     });
 };

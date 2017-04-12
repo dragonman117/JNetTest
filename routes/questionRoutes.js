@@ -6,7 +6,7 @@ module.exports = function(app, passport){
     /**
      * Gets a single question's information, mainly with a list of other questions that produce an array of lists
      */
-    app.get('/data/question/:id', function(req,res,next){
+    app.get('/data/question/edit/:id', function(req,res,next){
         promises = [
             db.Question.findById(req.params['id']),
             db.TestCase.findAll({where: {question_id: req.params['id']}}),
@@ -15,7 +15,8 @@ module.exports = function(app, passport){
         Promise.all(promises).then(function(results) {
             let question = results[0];
             question.dataValues['test_cases'] = results[1]
-            res.send(JSON.stringify(question));
+            //res.send(JSON.stringify(question));
+            res.render("question_editor", question.dataValues);
         });
     });
 

@@ -1,0 +1,72 @@
+{{>header_start}}
+{{>header_end}}
+{{>main_no_sidebar_start}}
+
+<div class="mdl-grid">
+    <!-- Question ID
+    Back to Exam button
+    Form containing the following:
+        Question Prompt text box
+        Graphic string
+        start_code
+        Save Button
+
+    Plus button above
+    List of Test Cases:
+        each test case is a separate card
+        each card has a minus for delete, and another symbol for edit
+    -->
+
+    <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+        Question: {{id}}
+        <form action="" method="post">
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" name="id" type="integer" id="id" />
+                <label class="mdl-textfield__label" for="id">{{id}}</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" name="prompt" type="text" id="prompt" />
+                <label class="mdl-textfield__label" for="prompt">{{prompt}}</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="text" name="graphic" id="graphic" />
+                <label class="mdl-textfield__label" for="graphic">{{graphic}}</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="text" name="starter_code" id="starter_code" />
+                <label class="mdl-textfield__label" for="starter_code">{{starter_code}}</label>
+            </div>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                Save Changes
+            </button>
+        </form>
+    </div>
+    <p></p>
+    <div class="mdl-grid">
+
+    <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+        {{#each test_cases}}
+        <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+            <form method="post" action="/data/test_case/edit/{{this.id}}">
+                <input id="id" name="id" type="number" class="form-control" value={{this.id}} readonly>
+                <textarea id="input" name="input" class="form-control" rows="5" type="text">{{this.input}}</textarea>
+                <textarea id="expected_output" name="expected_output" class="form-control" rows="5" type="text">{{this.expected_output}}</textarea>
+                <button class="test_case_button mdl-button mdl-button--raised" type="submit">Submit T_C:{{this.id}}</button>
+            </form>
+        </div>
+        {{/each}}
+    </div>
+
+    </div>
+
+
+
+
+
+
+
+</div>
+
+
+
+{{>main_no_sidebar_end}}
