@@ -1,0 +1,46 @@
+#editor{
+    min-height: 75vh;
+}
+.no-lr-pad{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+@keyframes graphicsIn {
+    from{height: 0vh; margin-top: 0px;}
+    to{height: 25vh; margin-top: -25vh;}
+}
+
+#console {
+    background-color: white;
+    display: none;
+    height: 25vh;
+    z-index: 40;
+    margin-top: -25vh;
+    -webkit-animation-name: wkgraphicsIn;
+    -webkit-animation-duration: 1s;
+    animation-name: graphicsIn;
+    animation-duration: 1s;
+}
+
+.compileResults{
+    height: 3vh;
+    color: white;
+    font-size: 2vh;
+}
+
+.titlebar{
+    height: 3vh;
+    background-color: #595959;
+}
+
+.toggle-btn{
+    max-height: 3vh;
+}
+
+#compile-body{
+    height: 22vh;
+    overflow-y: auto;
+}

@@ -28,10 +28,9 @@ db = require("../config/db.js");
 hbs = require('hbs');
 hbs.registerPartials(__dirname + '/../views/partials');
 
+
 module.exports = function(app, passport) {
-    app.get('/', function (req, res) {
-        res.render('main_with_sidebar', {classSections: ['CS1400', 'MATH2200', 'DEATH2250']});
-        //res.json({status:"found home"});
+      res.redirect('/dashboard');
     });
 
     app.post('/signup', function (req, res, next) {
@@ -46,7 +45,7 @@ module.exports = function(app, passport) {
                 }).error(function (err) {
                     console.log(err);
                 });
-                res.json({status: "user created"})
+                res.redirect("/login");
             } else {
                 res.json({status: "user exists in db"});
             }
@@ -56,19 +55,24 @@ module.exports = function(app, passport) {
         });
     });
 
-    app.get('/login', function (req, res, next) {
+    app.get('/signup', function(req, res, next){
+        res.render('signup');
+    })
+
+    app.get('/login', function(req, res, next){
         res.render('login');
     });
 
-    app.post('/login', passport.authenticate('local', {
-        successRedirect: '/userInfo', // redirect to the secure profile section
-        failureRedirect: '/error' // redirect back to the signup page if there is an error
+    app.post('/login', passport.authenticate('local',{
+        successRedirect : '/dashboard', // redirect to the secure profile section
+        failureRedirect : '/error' // redirect back to the signup page if there is an error
     }));
 
     app.get('/logout', function (req, res, next) {
         req.logout();
-        console.log(req.session);
-        res.json({status: 'logout', sucess: true});
+        res.redirect('/login');
+        //console.log(req.session);
+        //res.json({status:'logout', sucess:true});
     });
 
     app.get('/userInfo', isLoggedIn, function (req, res, next) {
