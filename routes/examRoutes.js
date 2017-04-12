@@ -36,8 +36,6 @@ module.exports = function(app, passport) {
         console.log(exam);
         db.Exam.update(exam, {where: {id: req.params['id']}}).then(function (exam) {
             res.redirect('/exam/edit/' + req.params['id'])
-            res.sendStatus(200);
-            res.end();
         });
     });
 
