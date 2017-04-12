@@ -31,14 +31,13 @@ module.exports = function(app, passport) {
      * is update basic exam information:
      * Title, open_date, close_date, rule_stmt, time_limit
      */
-    app.post('/data/exam/edit/:id', function (req, res, next) {
+    app.post('/exam/edit/:id', function (req, res, next) {
         //exam = database.getExam(req.params['id']);
         //change exam info
         //refresh page
         exam = req.body;
         db.Exam.update(exam, {where: {id: req.params['id']}}).then(function (exam) {
-            res.sendStatus(200);
-            res.end();
+            res.redirect('/exam/edit/' + req.params['id'])
         });
     });
 
@@ -52,13 +51,9 @@ module.exports = function(app, passport) {
         db.Exam.create({
             section_id: req.params['section_id'],
             title: 'Unititled Exam',
-            published: Date(),
-            open_date: Date(),
-            close_date: Date(),
-            rules_stmt: 'Rules for the exam. These will be displayed to the student.',
-            time_limit: '60'
+            published: false
         }).then(function (exam) {
-            res.redirect('/data/exam/' + exam.id + '/edit');
+            res.redirect('/exam/edit/' + exam.id);
         });
     });
 
@@ -75,7 +70,6 @@ module.exports = function(app, passport) {
         });
     });
 };
-
 
 function getExamById(id){
     return new Promise((resolve, reject) => {
