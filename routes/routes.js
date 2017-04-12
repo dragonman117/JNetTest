@@ -30,8 +30,10 @@ hbs.registerPartials(__dirname + '/../views/partials');
 
 
 module.exports = function(app, passport) {
-      res.redirect('/dashboard');
-    });
+
+    app.get('/', function(req,res,next){
+        res.redirect('/dashboard');
+    })
 
     app.post('/signup', function (req, res, next) {
         //console.log(req.body);
@@ -55,17 +57,17 @@ module.exports = function(app, passport) {
         });
     });
 
-    app.get('/signup', function(req, res, next){
+    app.get('/signup', function (req, res, next) {
         res.render('signup');
     })
 
-    app.get('/login', function(req, res, next){
+    app.get('/login', function (req, res, next) {
         res.render('login');
     });
 
-    app.post('/login', passport.authenticate('local',{
-        successRedirect : '/dashboard', // redirect to the secure profile section
-        failureRedirect : '/error' // redirect back to the signup page if there is an error
+    app.post('/login', passport.authenticate('local', {
+        successRedirect: '/dashboard', // redirect to the secure profile section
+        failureRedirect: '/error' // redirect back to the signup page if there is an error
     }));
 
     app.get('/logout', function (req, res, next) {
@@ -81,26 +83,26 @@ module.exports = function(app, passport) {
         res.json(user);
     });
 
-    app.get('/notAuthorised',function(req, res, next){
-        res.json({hasError: true, message:lang.notAuth});
+    app.get('/notAuthorised', function (req, res, next) {
+        res.json({hasError: true, message: lang.notAuth});
     });
 
-    app.get('/error', function(req, res, next){
+    app.get('/error', function (req, res, next) {
         let response = {
             hasError: true,
             errMessage: lang.loginErr
         };
         res.json(response);
     });
-}
 
 // route middleware to make sure a user is logged in
-function isLoggedIn(req, res, next) {
+    function isLoggedIn(req, res, next) {
 
-    // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
-        return next();
+        // if user is authenticated in the session, carry on
+        if (req.isAuthenticated())
+            return next();
 
-    // if they aren't redirect them to the home page
-    res.redirect('/notAuthorised');
-};
+        // if they aren't redirect them to the home page
+        res.redirect('/notAuthorised');
+    }
+}
