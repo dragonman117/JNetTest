@@ -7,6 +7,7 @@
 
 <!--set action="pageid"-->
 <div class="mdl-grid">
+    <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
     <form method="post">
         <fieldset>
             <!--int id-->
@@ -50,16 +51,18 @@
             <input type="submit" value="Save Exam Data">
         </fieldset>
     </form>
+    </div>
 
-    <div class="mdl-grid">
+
         <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
             {{#each questions}}
-                <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
-                    <a href="/data/question/edit/{{this.id}}">Question: {{this.id}}</a>
-                </div>
+                    <a href="/data/question/edit/{{this.id}}" class="mdl-navigation__link">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                            Question: {{this.id}}
+                        </button></a>
             {{/each}}
         </div>
-    </div>
+
 </div>
 </div>
 

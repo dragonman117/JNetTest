@@ -67,7 +67,7 @@ module.exports = function(app, passport) {
         getExamById(req.params["id"]).then(exam =>
         {
             //res.send(exam);
-            console.log(exam);
+            //console.log(exam);
             res.render('full_exam_editor', exam);
         });
     });
