@@ -18,22 +18,21 @@
     -->
 
     <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
-        Question: {{id}}
-        <form action="" method="post">
+        <a href="/edit/exam/{{exam_id}}" class="mdl-navigation__link"><button class="test_case_button mdl-button mdl-button--raised">Back to Exam</button></a>
+        <form action="/edit/exam/{{exam_id}}/question/{{id}}" method="post">
+
+            <input class="mdl-textfield__input" name="id" type="hidden" id="{{id}}" value="{{id}}" readonly>
+
             <div class="mdl-textfield mdl-js-textfield">
-                <input class="mdl-textfield__input" name="id" type="integer" id="id" />
-                <label class="mdl-textfield__label" for="id">{{id}}</label>
-            </div>
-            <div class="mdl-textfield mdl-js-textfield">
-                <input class="mdl-textfield__input" name="prompt" type="text" id="prompt" />
+                <input class="mdl-textfield__input" name="prompt" type="text" id="prompt" value="{{prompt}}" />
                 <label class="mdl-textfield__label" for="prompt">{{prompt}}</label>
             </div>
             <div class="mdl-textfield mdl-js-textfield">
-                <input class="mdl-textfield__input" type="text" name="graphic" id="graphic" />
+                <input class="mdl-textfield__input" type="text" name="graphic" id="graphic" value="{{graphic}}" />
                 <label class="mdl-textfield__label" for="graphic">{{graphic}}</label>
             </div>
             <div class="mdl-textfield mdl-js-textfield">
-                <input class="mdl-textfield__input" type="text" name="starter_code" id="starter_code" />
+                <input class="mdl-textfield__input" type="text" name="starter_code" id="starter_code" value="{{starter_code}}" />
                 <label class="mdl-textfield__label" for="starter_code">{{starter_code}}</label>
             </div>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
@@ -41,13 +40,11 @@
             </button>
         </form>
     </div>
-    <p></p>
-    <div class="mdl-grid">
 
-    <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
         {{#each test_cases}}
-        <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
-            <form method="post" action="/data/test_case/edit/{{this.id}}">
+
+            <div class="demo-card-square mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col">
+            <form method="post" action="/edit/exam/{{../exam_id}}/question/{{../id}}/test_case/{{this.id}}">
                 <input id="id" name="id" type="number" class="form-control" value={{this.id}} readonly>
                 <textarea id="input" name="input" class="form-control" rows="5" type="text">{{this.input}}</textarea>
                 <textarea id="expected_output" name="expected_output" class="form-control" rows="5" type="text">{{this.expected_output}}</textarea>
@@ -55,9 +52,7 @@
             </form>
         </div>
         {{/each}}
-    </div>
 
-    </div>
 
 
 

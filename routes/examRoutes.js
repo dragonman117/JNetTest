@@ -9,7 +9,7 @@ module.exports = function(app, passport) {
      * this exam alone. Finally, delete the exam with id
      */
 //NEEDS TESTING
-    app.get('/data/exam/delete/:id', function (req, res, next) {
+    app.get('/delete/exam/:id', function (req, res, next) {
         //exam = database.getExam(req.params['id']);
         //dereference class section from this exam
         //dereference questions from this exam, if question is unattached, delete it
@@ -31,7 +31,7 @@ module.exports = function(app, passport) {
      * is update basic exam information:
      * Title, open_date, close_date, rule_stmt, time_limit
      */
-    app.post('/exam/edit/:id', function (req, res, next) {
+    app.post('/edit/exam/:id', function (req, res, next) {
         //exam = database.getExam(req.params['id']);
         //change exam info
         //refresh page
@@ -46,7 +46,7 @@ module.exports = function(app, passport) {
      * title, open_date, close_date, rules_stmt, time_limit, section_id
      * then it should redirect to the exam editing page
      */
-    app.get('/data/exam/create/:section_id', function (req, res, next) {
+    app.get('/create/exam/:section_id', function (req, res, next) {
         //create exam using basic info
         db.Exam.create({
             section_id: req.params['section_id'],
@@ -63,7 +63,7 @@ module.exports = function(app, passport) {
      * Get all the question information from the exam
      * Get all the test cases from the questions
      */
-    app.get('/exam/edit/:id', function (req, res, next) {
+    app.get('/edit/exam/:id', function (req, res, next) {
         getExamById(req.params["id"]).then(exam =>
         {
             //res.send(exam);

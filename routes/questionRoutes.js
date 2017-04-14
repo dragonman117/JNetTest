@@ -6,15 +6,17 @@ module.exports = function(app, passport){
     /**
      * Gets a single question's information, mainly with a list of other questions that produce an array of lists
      */
-    app.get('/data/question/edit/:id', function(req,res,next){
+    app.get('/edit/exam/:eid/question/:qid', function(req,res,next){
         promises = [
-            db.Question.findById(req.params['id']),
-            db.TestCase.findAll({where: {question_id: req.params['id']}}),
+            db.Question.findById(req.params['qid']),
+            db.TestCase.findAll({where: {question_id: req.params['qid']}}),
         ];
 
         Promise.all(promises).then(function(results) {
             let question = results[0];
-            question.dataValues['test_cases'] = results[1]
+            question.dataValues['test_cases'] = results[1];
+            question.exam_id = req.params['eid'];
+            question.qid = req.params['qid'];
             //res.send(JSON.stringify(question));
             res.render("question_editor", question.dataValues);
         });
@@ -23,7 +25,7 @@ module.exports = function(app, passport){
     /**
      * Creates an empty question that takes exam_id as input:
      */
-    app.get('/data/question/create/:exam_id', function(req, res, next){
+    app.get('/create/exam/:exam_id/question', function(req, res, next){
         //create new question
         //attach exam to question and vice versa
         //refresh page
@@ -39,13 +41,13 @@ module.exports = function(app, passport){
      * Updates a question with new information:
      * prompt, graphic, starter_code, average_score, pts_test_cast, pts_graded
      */
-    app.post('/data/question/edit/:id', function(req, res, next){
+    app.post('/edit/exam/:exam_id/question/:q_id', function(req, res, next){
         //question = database.getQuestion(req.params['id']);
         //update question with new info from req
         question = req.body;
-        db.Question.update(question, {where: {id: req.params['id']}}).then(function(question){
-            res.sendStatus(200);
-            res.end();
+        db.Question.update(question, {where: {id: req.params['q_id']}}).then(function(question){
+            //console.log(req.body);
+            res.redirect('/edit/exam/'+req.params['exam_id']+'/question/'+req.params['q_id']);
         });
     });
 
@@ -54,7 +56,7 @@ module.exports = function(app, passport){
      * then dereferences from test cases
      * Then deletes the question
      */
-    app.get('/data/question/delete/:id', function(req, res, next){
+    app.get('/delete/exam/:exam_id/question/:q_id', function(req, res, next){
             db.TestCase.destroy({where: {question_id: req.params['id']}});
             db.Question.destroy({where: {id: req.params['id']}});
             res.sendStatus(200)

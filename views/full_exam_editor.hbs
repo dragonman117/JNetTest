@@ -12,8 +12,7 @@
         <fieldset>
             <!--int id-->
             <div class="form-group">
-                <label for="id">Exam ID</label>
-                <input name="id" type="number" id="id" class="form-control" value="{{id}}" aria-describedby="examID" readonly>
+                <input name="id" type="hidden" id="id" class="form-control" value="{{id}}" aria-describedby="examID" readonly>
             </div>
             <!--string title-->
             <div class="form-group">
@@ -56,7 +55,7 @@
 
         <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
             {{#each questions}}
-                    <a href="/data/question/edit/{{this.id}}" class="mdl-navigation__link">
+                    <a href="/edit/exam/{{id}}/question/{{this.id}}" class="mdl-navigation__link">
                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
                             Question: {{this.id}}
                         </button></a>
