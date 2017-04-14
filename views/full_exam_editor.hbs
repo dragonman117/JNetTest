@@ -53,14 +53,27 @@
     </div>
 
 
-        <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+    <!-- FAB button with ripple -->
+    <a href="/create/exam/{{id}}/question"><button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+        <i class="material-icons">add</i>
+    </button></a>
             {{#each questions}}
-                    <a href="/edit/exam/{{id}}/question/{{this.id}}" class="mdl-navigation__link">
+            <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+                    <a href="/edit/exam/{{../id}}/question/{{this.id}}" class="mdl-navigation__link">
                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
                             Question: {{this.id}}
                         </button></a>
+                    {{this.prompt}}
+
+                <a href="/edit/exam/{{../id}}/question/{{this.id}}"><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+                    <i class="material-icons">books</i>
+                </button></a>
+                <a href="/delete/exam/{{../id}}/question/{{this.id}}"><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+                    <i class="material-icons">remove circle</i>
+                </button></a>
+            </div>
             {{/each}}
-        </div>
+
 
 </div>
 </div>

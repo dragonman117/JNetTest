@@ -32,8 +32,7 @@ module.exports = function(app, passport){
         db.Question.create({
             exam_id: req.params['exam_id']
         }).then(function(question){
-            res.send(question);
-            res.end();
+            res.redirect('/edit/exam/'+req.params['exam_id']+'/question/'+question.id);
         })
     });
 
@@ -57,11 +56,11 @@ module.exports = function(app, passport){
      * Then deletes the question
      */
     app.get('/delete/exam/:exam_id/question/:q_id', function(req, res, next){
-            db.TestCase.destroy({where: {question_id: req.params['id']}});
-            db.Question.destroy({where: {id: req.params['id']}});
-            res.sendStatus(200)
-            res.end()
-        });
+            db.TestCase.destroy({where: {question_id: req.params['q_id']}});
+            db.Question.destroy({where: {id: req.params['q_id']}});
+        res.redirect('/edit/exam/'+req.params['exam_id']);
+
+    });
 
         /*
         db.Question.destroy({where: {id: req.params['id']}}).then(function(){
