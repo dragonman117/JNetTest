@@ -23,7 +23,7 @@ module.exports = function(app, passport) {
         //attach exam to question and vice versa
         //refresh page
         db.TestCase.create({
-            question_id: req.params['question_id'],
+            question_id: req.params['q_id'],
             expected_output: ''
         }).then(function(test_case){
             res.redirect('/edit/exam/'+req.params['e_id']+'/question/'+req.params['q_id']);
@@ -47,10 +47,9 @@ module.exports = function(app, passport) {
      * First dereferences a test case from all its questions,
      * then deletes the test case
      */
-    app.get('/delete/exam/:e_id/question/:q_id/test_case/:id', function (req, res, next) {
-        db.TestCase.destroy({where: {id: id}}).then(function () {
-            res.status(200);
-            res.end();
+    app.get('/delete/exam/:e_id/question/:q_id/test_case/:t_id', function (req, res, next) {
+        db.TestCase.destroy({where: {id: req.params['t_id']}}).then(function () {
+            res.redirect('/edit/exam/'+req.params['e_id']+'/question/'+req.params['q_id']);
         })
     });
 };
