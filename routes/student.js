@@ -31,7 +31,30 @@ module.exports = function (app, passport) {
     app.get("/dashboard", auth.isLoggedIn, view.getGlobals, function(req, res){
         let testList = ["Dummy Test", "Dummy Test", "Dummy Test", "Dummy Test", "Dummy Test"];
         req.viewData.tests= testList;
-        res.render("student_dashboard", req.viewData);
+
+        //get sections list
+        db.UserSection.findAll({where: {user_id: req.viewData.user.id}})
+            .then(results => {
+                let promises = [];
+                results.forEach(result => {
+                    promises.push(
+                        db.Section.findById(result['section_id'], {include: [{model: db.Exam}]})
+                    );
+                });
+                Promise.all(promises).then(sections => {
+                    //res.send(sections);
+                    //console.log("Test");
+                    //console.log(sections[0].dataValues);
+                    //console.log(sections[0].dataValues.name);
+                    console.log(sections[0].dataValues);
+                    req.viewData.classSections = sections;
+                    res.render("student_dashboard", req.viewData);
+                    //console.log(req.viewData.classSections[0].dataValues.name);
+                });
+            });
+
+
+
         //res.render('main_with_sidebar', {username: req.session.passport.user.username, classSections:['CS1400', 'MATH2200','DEATH2250']})
     });
 };
