@@ -21,8 +21,7 @@ module.exports = function(app, passport) {
                db.Question.destroy({where: {id: question.id}});
            });
            db.Exam.destroy({where: {id: req.params['id']}});
-           res.sendStatus(200);
-           res.end();
+           res.redirect('/');
         });
     });
 
@@ -37,7 +36,7 @@ module.exports = function(app, passport) {
         //refresh page
         exam = req.body;
         db.Exam.update(exam, {where: {id: req.params['id']}}).then(function (exam) {
-            res.redirect('/exam/edit/' + req.params['id'])
+            res.redirect('/edit/exam/' + req.params['id'])
         });
     });
 
