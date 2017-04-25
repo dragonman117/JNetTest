@@ -77,7 +77,7 @@ function getExamById(id){
     return new Promise((resolve, reject) => {
         let exam_data;
         let examPromise = db.Exam.findById(id);
-        var questionsPromise = db.Question.findAll({where: {exam_id: id}})
+        var questionsPromise = db.Question.findAll({where: {exam_id: id}});
         Promise.all([examPromise, questionsPromise]).then(function (results) {
             let exam = JSON.parse(JSON.stringify(results[0]));
             let questions = results[1];
