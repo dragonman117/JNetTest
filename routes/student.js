@@ -108,7 +108,7 @@ module.exports = function (app, passport) {
         let userProm = db.User.findById(req.session.passport.user.id);
         Promise.all([examProm, userProm]).then(function (res1) {
             //Create the submision ...
-            db.Submission.create({date_submitted:Date.now()}).then(function (sub) {
+            db.Submission.create({date_submitted:new Date()}).then(function (sub) {
                 res1[1].addSubmission(sub);
                 res1[0].addSubmission(sub);
                 let data = JSON.parse(req.body.submission);

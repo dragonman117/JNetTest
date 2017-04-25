@@ -95,6 +95,7 @@ function displayQuestion(id){
             starter = "#include<iostream>\n\nusing namespace std;\n\nint main(){\n    cout << \"Hello World\"<< endl;\n    return 0;\n}"
         }
         editor.setValue(starter);
+        editor.resize();
         if(id === 0){
             prev = false;
             $("#prev").attr("disabled","");
