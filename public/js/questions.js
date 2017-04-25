@@ -9,11 +9,21 @@ $("#compile").on("click", function (e) {
     $("#compile-body").html("Compiling ... ");
     $.post("/exam/compile",{'code':content}, function (data) {
         console.log(data);
+        let result = "";
         if(data.errorLog === ""){
-            let result = "Compilation Success: " + data.runTime.trim() + " sec \n" + data.stdout;
+            if(typeof(data.runTime) === "string"){
+                result = "Compilation Success: " + data.runTime.trim() + " sec \n" + data.stdout;
+            }else{
+                result = "Compilation Success: " + data.runTime + " sec \n" + data.stdout;
+            }
             $("#compile-body").html(result);
         } else {
-            let result = "Compilation Failed: " + data.runTime.trim() + " sec \n" + data.errorLog;
+            //let result = "Compilation Failed: " + data.runTime.trim() + " sec \n" + data.errorLog;
+            if(typeof(data.runTime) === "string"){
+                result = "Compilation Failed: " + data.runTime.trim() + " sec \n" + data.errorLog;
+            }else{
+                result = "Compilation Failed: " + data.runTime + " sec \n" + data.errorLog;
+            }
             $("#compile-body").html(result);
         }
     }, 'json')
