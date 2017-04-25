@@ -26,10 +26,69 @@ module.exports = function (app, passport) {
         });
     });
 
+    app.get('/dashboard/:s_id', auth.isLoggedIn, view.getGlobals, function(req, res){
+        db.UserSection.findAll({where: {user_id: req.viewData.user.id}})
+            .then(results => {
+                let promises = [];
+                results.forEach(result => {
+                    promises.push(
+                        db.Section.findById(result['section_id'], {include: [{model: db.Exam}]})
+                    );
+                });
+                Promise.all(promises).then(sections => {
+                    //res.send(sections);
+                    //console.log("Test");
+                    //console.log(sections[0].dataValues);
+                    //console.log(sections[0].dataValues.name);
+                    //console.log(sections[0].dataValues);
+
+                    req.viewData.classSections = sections;
+                    req.viewData.filter_sections = sections.filter(function(obj){
+                        console.log("URL ID: " + req.params['s_id']);
+                        console.log("Section ID: " + obj.id);
+                        return obj.id == req.params['s_id'];
+                    });
+                    console.log(req.viewData.classSections);
+                    //req.viewData.testList = ;
+                    res.render("student_dashboard", req.viewData);
+                    //console.log(req.viewData.classSections[0].dataValues.name);
+                });
+            });
+
+    })
+
+
     app.get("/dashboard", auth.isLoggedIn, view.getGlobals, function(req, res){
-        let testList = ["Dummy Test", "Dummy Test", "Dummy Test", "Dummy Test", "Dummy Test"];
-        req.viewData.tests= testList;
-        res.render("student_dashboard", req.viewData);
+       // let testList = ["Dummy Test", "Dummy Test", "Dummy Test", "Dummy Test", "Dummy Test"];
+       // req.viewData.tests= testList;
+
+        //get sections list
+        db.UserSection.findAll({where: {user_id: req.viewData.user.id}})
+            .then(results => {
+                let promises = [];
+                results.forEach(result => {
+                    promises.push(
+                        db.Section.findById(result['section_id'], {include: [{model: db.Exam}]})
+                    );
+                });
+                Promise.all(promises).then(sections => {
+                    //res.send(sections);
+                    //console.log("Test");
+                    //console.log(sections[0].dataValues);
+                    //console.log(sections[0].dataValues.name);
+                    //console.log(sections[0].dataValues);
+                    let sect = sections;
+                    req.viewData.classSections = sect;
+                    req.viewData.filter_sections = sect;
+                    //console.log(req.viewData.filterSections);
+
+                    res.render("student_dashboard", req.viewData);
+                    //console.log(req.viewData.classSections[0].dataValues.name);
+                });
+            });
+
+
+
         //res.render('main_with_sidebar', {username: req.session.passport.user.username, classSections:['CS1400', 'MATH2200','DEATH2250']})
     });
 
