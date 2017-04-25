@@ -9,7 +9,7 @@ var passport = require('passport');
 var passportConfig = require("./config/passport.js");
 var session = require('express-session');
 var hbs = require('hbs');
-var fs = require('fs')
+var fs = require('fs');
 
 
 /**

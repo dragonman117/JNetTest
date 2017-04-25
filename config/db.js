@@ -6,7 +6,7 @@ var sequelize = new Sequelize('nodeTest','root','',{
     'host': '127.0.0.1',
     'dialect':'mysql',
     pool: {
-        max: 10,
+        max: 10,f
         min: 0,
         idle: 10000
     }
