@@ -1,0 +1,76 @@
+{{>header_start}}
+{{>header_end}}
+{{>main_no_sidebar_start}}
+
+<div class="mdl-grid">
+    <!-- Question ID
+    Back to Exam button
+    Form containing the following:
+        Question Prompt text box
+        Graphic string
+        start_code
+        Save Button
+
+    Plus button above
+    List of Test Cases:
+        each test case is a separate card
+        each card has a minus for delete, and another symbol for edit
+    -->
+
+    <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+        <a href="/edit/exam/{{exam_id}}" class="mdl-navigation__link"><button class="test_case_button mdl-button mdl-button--raised">Back to Exam</button></a>
+        <form action="/edit/exam/{{exam_id}}/question/{{id}}" method="post">
+
+            <input class="mdl-textfield__input" name="id" type="hidden" id="{{id}}" value="{{id}}" readonly>
+
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" name="prompt" type="text" id="prompt" value="{{prompt}}" placeholder="Question Prompt" />
+                <label class="mdl-textfield__label" for="prompt">{{prompt}}</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="text" name="graphic" id="graphic" value="{{graphic}}" placeholder="Graphic"/>
+                <label class="mdl-textfield__label" for="graphic">{{graphic}}</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="text" name="starter_code" id="starter_code" value="{{starter_code}}" placeholder="Starter Code"/>
+                <label class="mdl-textfield__label" for="starter_code">{{starter_code}}</label>
+            </div>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                Save Changes
+            </button>
+        </form>
+    </div>
+
+    <!-- FAB button with ripple -->
+    <a href="/create/exam/{{exam_id}}/question/{{id}}/test_case"><!-- Mini FAB button -->
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+            <i class="material-icons">add</i>
+        </button></a>
+        {{#each test_cases}}
+
+            <div class="demo-card-square mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col">
+                <!-- Mini FAB button -->
+                <a href="/delete/exam/{{../exam_id}}/question/{{../id}}/test_case/{{this.id}}"><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+                    <i class="material-icons">remove circle</i>
+                </button></a>
+            <form method="post" action="/edit/exam/{{../exam_id}}/question/{{../id}}/test_case/{{this.id}}">
+                <input id="id" name="id" type="hidden" class="form-control" value={{this.id}} readonly>
+                <textarea id="input" name="input" class="form-control" rows="5" type="text">{{this.input}}</textarea>
+                <textarea id="expected_output" name="expected_output" class="form-control" rows="5" type="text">{{this.expected_output}}</textarea>
+                <button class="test_case_button mdl-button mdl-button--raised" type="submit">Submit T_C:{{this.id}}</button>
+            </form>
+        </div>
+        {{/each}}
+
+
+
+
+
+
+
+
+</div>
+
+
+
+{{>main_no_sidebar_end}}

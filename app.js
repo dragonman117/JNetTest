@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var passportConfig = require("./config/passport.js");
 var session = require('express-session');
+var hbs = require('hbs');
+var fs = require('fs')
 
 
 /**
@@ -21,6 +23,7 @@ app.db = require('./config/db.js');
  */
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
+hbs.registerPartials(__dirname + '/../views/partials');
 
 /**
  * Middleware
@@ -44,14 +47,18 @@ app.use(passport.session());
 
 
 /**
- * Routs
+ * Routes
  */
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.static(path.join(__dirname, 'public')));
+//require('./routes/routes.js')(app, passport);
 
-require('./routes/student.js')(app, passport);
-require('./routes/routes.js')(app, passport);
+routeFiles = fs.readdirSync('./routes/');
+routeFiles.forEach(file => {
+    var infile = path.join(__dirname, './routes', path.basename(file));
+    require(infile)(app, passport);
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
